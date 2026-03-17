@@ -1,20 +1,20 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home as HomeIcon, Gavel, ScrollText, ShoppingCart, User, Download, CircleUserRound } from 'lucide-react';
+import { Home as HomeIcon, Gavel, ScrollText, ShoppingCart, User, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const Header = ({ title = "DIAMOND AGENCY" }) => {
   const navigate = useNavigate();
   return (
-    <header className="main-header" style={{ height: '60px', background: 'var(--nav-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 15px', color: 'white', boxShadown: 'none' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <HomeIcon size={24} onClick={() => navigate('/home')} className="cursor-pointer" />
-        <h1 style={{ fontSize: '1.4rem', fontWeight: '900', letterSpacing: '0.5px', textTransform: 'uppercase', fontStyle: 'italic', margin: 0 }}>{title}</h1>
+    <header className="bg-brand-pink text-white flex items-center justify-between px-4 sticky top-0 z-[1000] shadow-lg" style={{ height: '60px' }}>
+      <div className="flex items-center gap-2">
+        <HomeIcon size={28} onClick={() => navigate('/home')} className="cursor-pointer hover:scale-110 transition-transform" />
+        <h1 className="text-xl font-condensed font-black italic tracking-tighter uppercase">{title}</h1>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-        <Download size={24} className="cursor-pointer" />
-        <NavLink to="/profile" style={{ color: 'white' }}>
-          <User size={26} />
+      <div className="flex items-center gap-4">
+        <Download size={24} className="cursor-pointer hover:scale-110 transition-transform" />
+        <NavLink to="/profile" className="hover:scale-110 transition-transform">
+          <User size={28} />
         </NavLink>
       </div>
     </header>
@@ -23,45 +23,44 @@ export const Header = ({ title = "DIAMOND AGENCY" }) => {
 
 export const BottomNav = () => {
   return (
-    <div style={{ position: 'fixed', bottom: 0, width: '100%', maxWidth: '480px', zIndex: 1000 }}>
-      {/* Footer Prize Agency Bar */}
-      <div style={{ backgroundColor: '#ff2056', color: 'white', padding: '12px 0', textAlign: 'center', fontWeight: '900', fontSize: '1.1rem', letterSpacing: '0.5px' }}>
+    <div className="fixed bottom-0 w-full max-w-[480px] z-[1000] shadow-[0_-4px_10px_rgba(0,0,0,0.1)]">
+      {/* Slogan Bar */}
+      <div className="bg-brand-pink text-white py-3 text-center font-condensed font-black text-lg tracking-wide border-b border-white/10 uppercase">
         INDIA'S LARGEST PRIZES AGENCY
       </div>
       
-      {/* Icon Navigation Bar */}
-      <nav style={{ height: '55px', backgroundColor: '#ff2056', display: 'flex', justifyContent: 'space-around', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.2)' }}>
-        <NavLink to="/home" style={({ isActive }) => ({ color: 'white', opacity: isActive ? 1 : 0.8 })}>
-          <HomeIcon size={28} />
+      {/* Navigation Icons */}
+      <nav className="bg-brand-pink flex justify-around items-center py-4 px-2">
+        <NavLink to="/home" className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-80 hover:opacity-100 hover:scale-110'}`}>
+          <HomeIcon size={32} />
         </NavLink>
-        <NavLink to="/rules" style={({ isActive }) => ({ color: 'white', opacity: isActive ? 1 : 0.8 })}>
-          <Gavel size={28} />
+        <NavLink to="/rules" className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-80 hover:opacity-100 hover:scale-110'}`}>
+          <Gavel size={32} />
         </NavLink>
-        <NavLink to="/results" style={({ isActive }) => ({ color: 'white', opacity: isActive ? 1 : 0.8 })}>
-          <ScrollText size={28} />
+        <NavLink to="/results" className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-80 hover:opacity-100 hover:scale-110'}`}>
+          <ScrollText size={32} />
         </NavLink>
-        <NavLink to="/cart" style={({ isActive }) => ({ color: 'white', opacity: isActive ? 1 : 0.8 })}>
-          <ShoppingCart size={28} />
+        <NavLink to="/cart" className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-80 hover:opacity-100 hover:scale-110'}`}>
+          <ShoppingCart size={32} />
         </NavLink>
       </nav>
     </div>
   );
 };
 
-const PageWrapper = ({ children, title, showNav = true }) => {
+const PageWrapper = ({ children, title, showNav = true, showHeader = true }) => {
   return (
     <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
       transition={{ duration: 0.3 }}
-      id="page-root"
-      style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', backgroundColor: '#ffffff' }}
+      className="flex flex-col min-h-screen w-full bg-white relative"
     >
-      <Header title={title} />
-      <div style={{ flex: 1, paddingBottom: showNav ? '120px' : '0' }}>
+      {showHeader && <Header title={title} />}
+      <main className={`flex-grow ${showNav ? 'pb-32' : ''}`}>
         {children}
-      </div>
+      </main>
       {showNav && <BottomNav />}
     </motion.div>
   );

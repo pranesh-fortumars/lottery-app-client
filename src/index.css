@@ -1,463 +1,132 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&family=Bebas+Neue&family=Roboto:wght@400;700;900&display=swap');
+
+@theme {
+  --color-brand-pink: #f42464;
+  --color-brand-red: #ff0000;
+  --font-bebas: "Bebas Neue", cursive;
+  --font-roboto: "Roboto", sans-serif;
+}
 
 :root {
-  --brand-pink: #f42464;
-  --brand-red: #ff0000;
-  --input-bg: #f2f2f2;
-  --input-border: #cccccc;
   --primary-pink: #f42464;
   --dark-red: #ff0000;
   --nav-gradient: linear-gradient(180deg, #f42464 0%, #ff5c8a 100%);
   --bg-body: #ffffff;
-  --bg-card: #ffffff;
-  --text-header: #ffffff;
-  --text-body: #333333;
-  --white: #ffffff;
-  --gray-light: #f2f2f2;
-  --gray-dark: #6c757d;
-  --border-red: #ff0000;
-  --header-height: 60px;
-  --footer-height: 120px;
   --max-width: 480px;
 }
 
-* {
-  box-sizing: border-box;
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f0f2f5;
   margin: 0;
   padding: 0;
 }
 
-body {
-  font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
-  background-color: var(--bg-body);
-  color: var(--text-body);
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
+#root {
+  max-width: var(--max-width);
+  margin: 0 auto;
   min-height: 100vh;
+  background: white;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 .font-condensed {
   font-family: 'Impact', 'Arial Narrow Bold', sans-serif;
-  letter-spacing: 0.5px;
 }
 
-#root {
-  width: 100%;
-  max-width: var(--max-width);
-  background-color: var(--bg-body);
-  min-height: 100vh;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Header Styles */
-.main-header {
-  height: var(--header-height);
-  background: var(--nav-gradient);
-  color: var(--white);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.main-header h1 {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 1.5rem;
-  letter-spacing: 1px;
-}
-
-.header-icons {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-/* Page Containers */
-.app-content {
-  flex: 1;
-  padding-bottom: var(--footer-height);
-}
-
-/* Section Titles */
-.section-title {
-  color: var(--text-header);
-  font-size: 1.25rem;
-  font-weight: 700;
-  padding: 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Lottery Grid */
-.lottery-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  padding: 0 15px;
-}
-
-/* Bottom Nav */
-.bottom-nav-container {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  max-width: var(--max-width);
-  z-index: 1000;
-}
-
-.promo-bar {
-  background-color: #ff0000;
-  color: white;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.875rem;
-  font-weight: 700;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.8; }
-  50% { opacity: 1; }
-  100% { opacity: 0.8; }
-}
-
-.nav-bar {
-  height: 50px;
-  background-color: var(--white);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  border-top: 1px solid #ddd;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #333;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.nav-item.active {
-  color: var(--primary-pink);
-}
-
-/* Tables for Results */
-.result-table {
-  width: 90%;
-  margin: 15px auto;
-  border-collapse: collapse;
-  border: 1px solid var(--border-red);
-  background: white;
-}
-
-.result-table td {
-  padding: 10px;
-  border: 1px solid var(--border-red);
-  font-size: 0.9rem;
-}
-
-.result-label {
-  font-weight: 700;
-  width: 40%;
-}
-
-.result-circle {
-  display: inline-flex;
-  width: 30px;
-  height: 30px;
-  background-color: #ff0000;
-  color: white;
-  border-radius: 50%;
-  align-items: center;
-  justify-content: center;
-  margin-right: 5px;
-  font-weight: 700;
-}
-
-/* Buttons */
-.btn-add {
-  background-color: var(--dark-red);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-family: 'Bebas Neue', cursive;
-  font-size: 1.2rem;
-  border: none;
-  width: 100%;
-  cursor: pointer;
-}
-
-.btn-random {
-  background-color: var(--gray-dark);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 5px;
-  font-size: 0.75rem;
-  border: none;
-  font-family: 'Inter', sans-serif;
-  cursor: pointer;
-}
-
-.countdown-timer {
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-  align-items: center;
-  margin-top: 5px;
-}
-
-.countdown-box {
-  background-color: white;
-  color: black;
-  width: 25px;
-  height: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 13px;
-  border-radius: 4px;
-}
-
-.auth-input-container {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ced4da;
-  border-radius: 6px;
-  margin-bottom: 12px;
-  overflow: hidden;
-  background: #ffffff;
-}
-
-.auth-icon-box {
-  padding: 12px;
-  background: #e9ecef;
-  border-right: 1px solid #ced4da;
-  display: flex;
-  align-items: center;
-  width: 60px;
-  justify-content: center;
-  color: #495057;
-  font-weight: 600;
-}
-
-.auth-input {
-  flex: 1;
-  padding: 12px;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 1rem;
-  color: #333;
-}
-
-/* Home Card Styles */
-.game-card {
-  aspect-ratio: 16/10;
-  background-size: cover;
-  background-position: center;
-  border-radius: 12px;
-  position: relative;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  overflow: hidden;
-}
-
-.game-card-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+/* Custom Styles for Lottery UI */
+.game-card-gradient {
   background: linear-gradient(135deg, #001f3f 0%, #000c19 100%);
-  z-index: 1;
 }
 
-.game-card-content {
-  position: relative;
-  z-index: 2;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.game-card-title {
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.jackpot-btn {
-  background-color: #ff0044;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 0;
-  font-weight: 600;
-  font-size: 14px;
-  flex: 1;
-  cursor: pointer;
+.slot-card {
+  border: 1px solid #ff0000;
+  border-radius: 8px;
+  padding: 8px;
+  width: 30%;
   text-align: center;
+  transition: all 0.2s ease;
 }
 
-/* Jackpot Specific Styles */
-.bg-primary-red {
-  background-color: var(--primary-pink);
+.slot-time {
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: #ff0000;
 }
 
-.btn-jackpot-action {
-  background-color: var(--primary-pink);
-  color: white;
-  padding: 8px 30px;
-  border-radius: 25px;
-  border: none;
-  font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  font-size: 14px;
+.slot-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
 }
 
 .jackpot-card {
-  border: 2px solid var(--primary-pink);
-  border-radius: 15px;
+  border: 2px solid #f42464;
+  border-radius: 12px;
   padding: 12px;
-  background-color: white;
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 5px;
-}
-
-.jackpot-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 10px;
-}
-
-.pot-icon {
-  width: 35px;
-  height: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-}
-
-.jackpot-btn-random {
-  background-color: #666;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 4px 10px;
-  font-size: 11px;
-  cursor: pointer;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .jackpot-board-circle {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background-color: var(--primary-pink);
+  background-color: #f42464;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 12px;
+  font-weight: 900;
+  font-size: 0.75rem;
 }
 
 .jackpot-input {
   width: 45px;
-  height: 35px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
   text-align: center;
-  font-size: 1.1rem;
-  font-weight: bold;
+  font-size: 1.2rem;
+  font-weight: 900;
   outline: none;
-  background-color: #fff;
-}
-
-.jackpot-input-small {
-  width: 35px;
-  height: 35px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  text-align: center;
-  font-size: 1rem;
-  font-weight: bold;
-  outline: none;
+  background: #fdfdfd;
 }
 
 .jackpot-qty-control {
   display: flex;
   align-items: center;
-  background-color: #f7f7f7;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  gap: 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
-.jackpot-qty-control button {
-  background-color: #666;
+.jackpot-btn-red {
+  background-color: #f42464;
   color: white;
-  border: none;
-  width: 25px;
-  height: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.jackpot-qty-control span {
-  width: 30px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.jackpot-btn-add {
-  background-color: var(--primary-pink);
-  color: white;
-  border: none;
-  border-radius: 5px;
+  font-weight: 900;
   padding: 6px 15px;
-  font-weight: bold;
-  font-size: 11px;
-  cursor: pointer;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  transition: active 0.1s;
 }
 
-.jackpot-btn-box {
-  background-color: var(--primary-pink);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 6px 15px;
-  font-weight: bold;
-  font-size: 11px;
-  cursor: pointer;
+.jackpot-btn-red:active {
+  transform: scale(0.95);
+}
+
+.btn-primary-red {
+    background-color: #f42464;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: 0 4px 6px rgba(244, 36, 100, 0.2);
 }
