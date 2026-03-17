@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = (e) => {
     e.preventDefault();
-    navigate('/home');
+    const result = login(mobile, password);
+    if (result.success) {
+      if (result.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/home');
+      }
+    } else {
+      setError(result.message);
+    }
   };
 
   return (
@@ -33,16 +43,17 @@ const LoginPage = () => {
 
       {/* BEGIN: LoginContainer */}
       <main className="flex-grow p-4 mt-4">
+        {error && <p className="text-red-500 text-xs font-black uppercase text-center mb-4 italic">{error}</p>}
         <form className="space-y-4" onSubmit={handleLogin}>
           {/* Phone Number Input Group */}
           <div className="flex border border-[#cccccc] rounded overflow-hidden">
             <div className="bg-[#f2f2f2] px-4 py-3 border-r border-[#cccccc] text-gray-700 font-bold">
-              +91
+              ID
             </div>
             <input 
               className="flex-grow p-3 outline-none border-none focus:ring-0 text-sm font-serif" 
-              placeholder="Enter your mobile number" 
-              type="tel"
+              placeholder="Enter admin or user" 
+              type="text"
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
             />

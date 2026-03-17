@@ -23,9 +23,18 @@ import AdminUserDetails from './pages/admin/AdminUserDetails';
 import AdminReports from './pages/admin/AdminReports';
 import AdminSettings from './pages/admin/AdminSettings';
 import { CartProvider } from './context/CartContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+
+const ProtectedRoute = ({ children, role }) => {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  if (role && user.role !== role) return <Navigate to="/home" replace />;
+  return children;
+};
 
 function App() {
   return (
+    <AuthProvider>
     <CartProvider>
       <Router>
       <AnimatePresence mode="wait">
@@ -35,33 +44,36 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           
           <Route path="/home" element={
-            <PageWrapper title="Diamond Agency">
-              <Dashboard />
-            </PageWrapper>
+            <ProtectedRoute>
+              <PageWrapper title="Diamond Agency">
+                <Dashboard />
+              </PageWrapper>
+            </ProtectedRoute>
           } />
           
-          <Route path="/rules" element={<RulesPage />} />
-          <Route path="/results" element={<ResultsPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/rules" element={<ProtectedRoute><RulesPage /></ProtectedRoute>} />
+          <Route path="/results" element={<ProtectedRoute><ResultsPage /></ProtectedRoute>} />
+          <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
-          <Route path="/select/:gameId" element={<SelectionPage />} />
-          <Route path="/jackpot" element={<JackpotPage />} />
+          <Route path="/select/:gameId" element={<ProtectedRoute><SelectionPage /></ProtectedRoute>} />
+          <Route path="/jackpot" element={<ProtectedRoute><JackpotPage /></ProtectedRoute>} />
           
           {/* Admin Routes */}
-          <Route path="/admin" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
-          <Route path="/admin/announcements" element={<AdminLayout><AdminAnnouncements /></AdminLayout>} />
-          <Route path="/admin/control" element={<AdminLayout><AdminControl /></AdminLayout>} />
-          <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
-          <Route path="/admin/users/:userId" element={<AdminLayout><AdminUserDetails /></AdminLayout>} />
-          <Route path="/admin/reports" element={<AdminLayout><AdminReports /></AdminLayout>} />
-          <Route path="/admin/settings" element={<AdminLayout><AdminSettings /></AdminLayout>} />
+          <Route path="/admin" element={<ProtectedRoute role="admin"><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
+          <Route path="/admin/announcements" element={<ProtectedRoute role="admin"><AdminLayout><AdminAnnouncements /></AdminLayout></ProtectedRoute>} />
+          <Route path="/admin/control" element={<ProtectedRoute role="admin"><AdminLayout><AdminControl /></AdminLayout></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute role="admin"><AdminLayout><AdminUsers /></AdminLayout></ProtectedRoute>} />
+          <Route path="/admin/users/:userId" element={<ProtectedRoute role="admin"><AdminLayout><AdminUserDetails /></AdminLayout></ProtectedRoute>} />
+          <Route path="/admin/reports" element={<ProtectedRoute role="admin"><AdminLayout><AdminReports /></AdminLayout></ProtectedRoute>} />
+          <Route path="/admin/settings" element={<ProtectedRoute role="admin"><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />
           
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </AnimatePresence>
     </Router>
     </CartProvider>
+    </AuthProvider>
   );
 }
 

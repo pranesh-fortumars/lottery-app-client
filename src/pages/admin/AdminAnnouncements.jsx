@@ -18,65 +18,51 @@ const AdminAnnouncements = () => {
   ]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 p-4">
       {/* Header Actions */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex justify-between items-center bg-white p-4 rounded-3xl shadow-sm border border-gray-100">
         <div>
-           <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">Broadcast Management</p>
-           <h2 className="text-2xl font-black text-gray-800 font-condensed uppercase tracking-tighter">Announcements & Alerts</h2>
+           <p className="text-gray-400 text-[8px] font-bold uppercase tracking-widest">Broadcasts</p>
+           <h2 className="text-sm font-black text-gray-800 font-condensed uppercase tracking-tight">System Alerts</h2>
         </div>
-        <button className="bg-gradient-to-r from-[#f42464] to-[#ff004d] text-white px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-wide flex items-center gap-2 shadow-lg hover:scale-105 active:scale-95 transition-all">
-          <Plus size={20} /> Create New
+        <button className="bg-[#f42464] text-white p-3 rounded-2xl flex items-center justify-center shadow-md active:scale-95">
+          <Plus size={20} />
         </button>
       </div>
 
-      {/* Grid of Announcements */}
-      <div className="grid grid-cols-1 gap-6">
+      {/* List of Announcements */}
+      <div className="space-y-4">
         {announcements.map((item) => (
-          <div key={item.id} className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row gap-6 relative group">
-            <div className={`w-14 h-14 rounded-2xl shrink-0 flex items-center justify-center shadow-lg ${
-              item.status === 'Active' ? 'bg-[#f42464] text-white' : 'bg-gray-100 text-gray-400'
-            }`}>
-              <Megaphone size={28} />
+          <div key={item.id} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm space-y-3">
+            <div className="flex justify-between items-start">
+               <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                 item.status === 'Active' ? 'bg-[#f42464] text-white' : 'bg-gray-100 text-gray-400'
+               }`}>
+                 <Megaphone size={20} />
+               </div>
+               <span className={`px-2 py-0.5 rounded-full text-[7px] font-black uppercase tracking-widest ${
+                 item.priority === 'High' ? 'bg-red-50 text-red-500' : 'bg-blue-50 text-blue-500'
+               }`}>
+                 {item.priority}
+               </span>
             </div>
 
-            <div className="flex-grow space-y-2">
-              <div className="flex items-center gap-3">
-                <h3 className="text-lg font-black text-gray-800 tracking-tight">{item.title}</h3>
-                <span className={`px-2.5 py-1 rounded-md text-[8px] font-black uppercase tracking-widest ${
-                  item.priority === 'High' ? 'bg-red-50 text-red-500' : 'bg-blue-50 text-blue-500'
-                }`}>
-                  {item.priority} Priority
-                </span>
-              </div>
-              <p className="text-sm text-gray-500 font-medium leading-relaxed max-w-3xl">
-                {item.content}
-              </p>
-              <div className="flex items-center gap-4 pt-2">
-                <div className="flex items-center gap-1.5 text-xs text-gray-400 font-bold">
-                   <Clock size={14} /> {item.date}
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-emerald-500 font-black uppercase tracking-tight">
-                   <CheckCircle2 size={14} /> {item.status}
-                </div>
-              </div>
+            <div>
+               <h3 className="text-sm font-black text-gray-800 tracking-tight">{item.title}</h3>
+               <p className="text-[10px] text-gray-500 font-medium leading-relaxed mt-1 line-clamp-2">
+                 {item.content}
+               </p>
             </div>
 
-            <div className="flex items-center gap-2 border-l border-gray-50 pl-6 shrink-0">
-               <button className="p-2.5 rounded-xl bg-gray-50 text-gray-400 hover:text-[#f42464] hover:bg-red-50 transition-all shadow-sm">
-                  <Edit3 size={18} />
-               </button>
-               <button className="p-2.5 rounded-xl bg-gray-50 text-gray-400 hover:text-[#f42464] hover:bg-red-50 transition-all shadow-sm">
-                  <Eye size={18} />
-               </button>
-               <button className="p-2.5 rounded-xl bg-gray-50 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all shadow-sm">
-                  <Trash2 size={18} />
-               </button>
+            <div className="flex items-center justify-between pt-3 border-t border-gray-50">
+               <div className="flex items-center gap-1.5 text-[8px] text-gray-400 font-bold uppercase tracking-widest">
+                  <Clock size={12} /> {item.date.split(' ')[0]}
+               </div>
+               <div className="flex gap-2">
+                  <button className="p-2 rounded-lg bg-gray-50 text-gray-400 active:bg-gray-100"><Edit3 size={14} /></button>
+                  <button className="p-2 rounded-lg bg-red-50 text-red-400 active:bg-red-100"><Trash2 size={14} /></button>
+               </div>
             </div>
-            
-            <button className="absolute top-6 right-6 lg:hidden">
-              <MoreVertical size={20} className="text-gray-300" />
-            </button>
           </div>
         ))}
       </div>
