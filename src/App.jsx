@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import SelectionPage from './pages/SelectionPage';
+import JackpotPage from './pages/JackpotPage';
 
 // Remaining Pages - We will create these shortly
 const SignupPage = () => <div className="content"><h1>Signup</h1></div>;
@@ -214,6 +215,7 @@ function App() {
           } />
 
           <Route path="/select/:gameId" element={<SelectionPage />} />
+          <Route path="/jackpot" element={<JackpotPage />} />
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </AnimatePresence>

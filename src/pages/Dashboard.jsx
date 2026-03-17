@@ -94,7 +94,10 @@ const Dashboard = () => {
         }}>
           <h3 style={{ fontFamily: 'Bebas Neue', fontSize: '2rem' }}>WIN BIG JACKPOT!</h3>
           <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>Daily slots available for maximum winnings.</p>
-          <button style={{ marginTop: '10px', backgroundColor: '#00ff00', color: 'black', border: 'none', padding: '8px 20px', borderRadius: '20px', fontWeight: '700' }}>
+          <button 
+            onClick={() => navigate('/jackpot')}
+            style={{ marginTop: '10px', backgroundColor: '#00ff00', color: 'black', border: 'none', padding: '8px 20px', borderRadius: '20px', fontWeight: '700', cursor: 'pointer' }}
+          >
             PLAY NOW
           </button>
         </div>

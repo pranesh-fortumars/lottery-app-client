@@ -197,3 +197,144 @@ body {
   font-size: 0.8rem;
   border: none;
 }
+
+/* Jackpot Specific Styles */
+.bg-primary-red {
+  background-color: var(--primary-pink);
+}
+
+.btn-jackpot-action {
+  background-color: var(--primary-pink);
+  color: white;
+  padding: 8px 30px;
+  border-radius: 25px;
+  border: none;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.jackpot-card {
+  border: 2px solid var(--primary-pink);
+  border-radius: 15px;
+  padding: 12px;
+  background-color: white;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.jackpot-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.pot-icon {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.jackpot-btn-random {
+  background-color: #666;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.jackpot-board-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--primary-pink);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.jackpot-input {
+  width: 45px;
+  height: 35px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+  outline: none;
+  background-color: #fff;
+}
+
+.jackpot-input-small {
+  width: 35px;
+  height: 35px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  outline: none;
+}
+
+.jackpot-qty-control {
+  display: flex;
+  align-items: center;
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.jackpot-qty-control button {
+  background-color: #666;
+  color: white;
+  border: none;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.jackpot-qty-control span {
+  width: 30px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.jackpot-btn-add {
+  background-color: var(--primary-pink);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 15px;
+  font-weight: bold;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.jackpot-btn-box {
+  background-color: var(--primary-pink);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 15px;
+  font-weight: bold;
+  font-size: 11px;
+  cursor: pointer;
+}
