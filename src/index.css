@@ -1,0 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&family=Bebas+Neue&display=swap');
+
+:root {
+  --primary-pink: #ff2056;
+  --dark-red: #ff0040;
+  --nav-gradient: linear-gradient(90deg, rgba(255,0,121,1) 0%, rgba(245,147,255,1) 61%, rgba(250,156,230,1) 100%);
+  --bg-body: #f7f7f7;
+  --bg-card: #ffffff;
+  --text-header: #ff0000;
+  --text-body: #000000;
+  --white: #ffffff;
+  --gray-dark: #686868;
+  --border-red: #ff0040;
+  --header-height: 50px;
+  --footer-height: 90px;
+  --max-width: 480px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #e0e0e0;
+  color: var(--text-body);
+  font-family: 'Arvo', serif;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  max-width: var(--max-width);
+  background-color: var(--bg-body);
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Styles */
+.main-header {
+  height: var(--header-height);
+  background: var(--nav-gradient);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.main-header h1 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.header-icons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+/* Page Containers */
+.app-content {
+  flex: 1;
+  padding-bottom: var(--footer-height);
+}
+
+/* Section Titles */
+.section-title {
+  color: var(--text-header);
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Lottery Grid */
+.lottery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 15px;
+}
+
+/* Bottom Nav */
+.bottom-nav-container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: var(--max-width);
+  z-index: 1000;
+}
+
+.promo-bar {
+  background-color: #ff0000;
+  color: white;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+.nav-bar {
+  height: 50px;
+  background-color: var(--white);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #ddd;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #333;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nav-item.active {
+  color: var(--primary-pink);
+}
+
+/* Tables for Results */
+.result-table {
+  width: 90%;
+  margin: 15px auto;
+  border-collapse: collapse;
+  border: 1px solid var(--border-red);
+  background: white;
+}
+
+.result-table td {
+  padding: 10px;
+  border: 1px solid var(--border-red);
+  font-size: 0.9rem;
+}
+
+.result-label {
+  font-weight: 700;
+  width: 40%;
+}
+
+.result-circle {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  background-color: #ff0000;
+  color: white;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  font-weight: 700;
+}
+
+/* Buttons */
+.btn-add {
+  background-color: var(--dark-red);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.2rem;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+}
+
+.btn-random {
+  background-color: var(--gray-dark);
+  color: white;
+  padding: 5px 15px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  border: none;
+}
