@@ -10,7 +10,8 @@ import {
   Phone,
   Wallet,
   CheckCircle2,
-  ChevronRight
+  ChevronRight,
+  ShieldCheck
 } from 'lucide-react';
 
 const AdminUsers = () => {
@@ -55,85 +56,85 @@ const AdminUsers = () => {
   );
 
   return (
-    <div className="space-y-6 p-4 pb-24 relative min-h-screen bg-[#f8f9fa]">
-      {/* Top Banner */}
-      <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 mb-6">
-         <p className="text-[#f42464] text-[10px] font-black uppercase tracking-widest mb-1">Management</p>
-         <h1 className="text-2xl font-black text-gray-900 font-condensed uppercase tracking-tighter">Player Directory</h1>
-         <p className="text-gray-400 text-[11px] font-medium">Total active members: {users.length}</p>
+    <div className="space-y-10 p-4 pb-24 relative min-h-screen bg-[#f8f9fa]">
+      {/* Top Banner - Premium Treasure Chest Design */}
+      <div className="border-[1.5px] border-[#ff004d] rounded-[2.5rem] p-6 bg-white shadow-2xl relative overflow-hidden group">
+         <div className="absolute top-0 right-0 w-32 h-32 bg-[#ff004d]/5 rounded-full blur-3xl"></div>
+         <div className="flex gap-4 items-center">
+            <img src="https://img.icons8.com/color/64/000000/treasure-chest.png" alt="Chest" className="w-16 h-16 drop-shadow-xl" />
+            <div className="flex-grow">
+               <h2 className="text-2xl font-black text-gray-900 font-condensed uppercase tracking-tighter italic">Player Vault</h2>
+               <p className="text-[#ff004d] font-black text-[10px] uppercase tracking-widest leading-none mt-1">Total Members: {users.length}</p>
+            </div>
+         </div>
       </div>
 
       {/* Search & Actions */}
       <div className="space-y-4">
-        <div className="relative">
-           <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
+        <div className="relative group">
+           <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#f42464] transition-colors" size={20} />
            <input 
              type="text" 
              placeholder="Search by name or phone..." 
              value={searchTerm}
              onChange={(e) => setSearchTerm(e.target.value)}
-             className="w-full h-14 bg-white border border-gray-100 rounded-2xl pl-14 pr-6 outline-none font-bold text-gray-800 shadow-sm text-xs placeholder:text-gray-300 focus:border-[#f42464]/30 transition-all"
+             className="w-full h-15 bg-white border border-gray-100 rounded-2xl pl-16 pr-6 outline-none font-bold text-gray-800 shadow-sm text-sm placeholder:text-gray-300 focus:border-[#f42464]/30 transition-all"
            />
         </div>
         
         <button 
           onClick={() => setShowAddForm(true)}
-          className="w-full h-14 bg-gradient-to-r from-[#f42464] to-[#ff004d] rounded-2xl font-black text-[10px] text-white uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all shadow-[#f42464]/20"
+          className="w-full h-15 bg-gray-900 rounded-2xl font-black text-[11px] text-white uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl active:scale-95 transition-all shadow-black/10"
         >
-          <UserPlus size={18} /> Register New Player
+          <UserPlus size={20} className="text-[#f42464]" /> Register New Player
         </button>
       </div>
 
       {/* User Cards */}
-      <div className="space-y-4">
-        {filteredUsers.length > 0 ? (
-          filteredUsers.map((user) => (
+      <div className="space-y-5">
+        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4 mb-2 italic">Active Member List</p>
+        <AnimatePresence>
+          {filteredUsers.map((user) => (
             <motion.div 
               layout
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               key={user.id} 
               onClick={() => navigate(`/admin/users/${user.id}`)}
-              className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex items-center justify-between group active:scale-[0.98] transition-all cursor-pointer"
+              className="bg-white rounded-[2rem] p-5 shadow-lg border border-gray-100 flex items-center justify-between group active:scale-[0.98] transition-all cursor-pointer relative overflow-hidden"
             >
-               <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-[#fce4ec] rounded-2xl flex items-center justify-center text-[#f42464] font-black text-lg border border-white shadow-sm group-hover:bg-[#f42464] group-hover:text-white transition-colors">
+               <div className="flex items-center gap-4 relative z-10">
+                  <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-[#f42464] font-black text-xl border border-white shadow-sm group-hover:bg-[#f42464] group-hover:text-white transition-all transform group-hover:rotate-6">
                      {user.name.charAt(0)}
                   </div>
                   <div>
-                     <h4 className="font-black text-gray-800 text-sm tracking-tight">{user.name}</h4>
-                     <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{user.phone}</p>
+                     <h4 className="font-black text-gray-800 text-sm tracking-tight uppercase italic">{user.name}</h4>
+                     <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-1">{user.phone}</p>
                   </div>
                </div>
-               <div className="text-right flex items-center gap-3">
-                  <div>
-                    <p className="font-black text-emerald-600 text-sm">₹{user.balance.toLocaleString()}</p>
-                    <span className={`text-[7px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
-                      user.status === 'Active' ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500'
-                    }`}>
-                      {user.status}
-                    </span>
+               <div className="text-right flex items-center gap-4 relative z-10">
+                  <div className="space-y-1">
+                    <p className="font-black text-emerald-600 text-base italic">₹{user.balance.toLocaleString()}</p>
+                    <div className="flex items-center justify-end gap-1.5">
+                       <span className={`w-1.5 h-1.5 rounded-full ${user.status === 'Active' ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
+                       <span className="text-[7px] font-black uppercase tracking-widest text-gray-400">{user.status}</span>
+                    </div>
                   </div>
-                  <ChevronRight size={16} className="text-gray-200" />
+                  <ChevronRight size={20} className="text-gray-100 group-hover:text-[#f42464] transition-colors" />
                </div>
             </motion.div>
-          ))
-        ) : (
-          <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
-             <User size={48} className="mx-auto text-gray-100 mb-4" />
-             <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">No players found</p>
-          </div>
-        )}
+          ))}
+        </AnimatePresence>
       </div>
 
-      {/* Add User Modal Overlay */}
+      {/* Add User Modal */}
       <AnimatePresence>
         {showAddForm && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-end justify-center p-4"
+            className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-end justify-center p-4 pb-10"
             onClick={() => setShowAddForm(false)}
           >
             <motion.div 
@@ -141,96 +142,59 @@ const AdminUsers = () => {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white w-full max-w-[440px] rounded-t-[2.5rem] rounded-b-[1.5rem] p-8 shadow-2xl space-y-6 overflow-hidden relative"
+              className="bg-white w-full max-w-[480px] rounded-[2.5rem] p-10 shadow-2xl space-y-8 relative overflow-hidden"
               onClick={e => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center border-b border-gray-50 pb-6">
+              <div className="flex justify-between items-start border-b border-gray-50 pb-8">
                 <div>
-                   <h2 className="text-xl font-black text-gray-900 uppercase tracking-tighter italic">Add New Player</h2>
-                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Create a user manually</p>
+                   <div className="flex items-center gap-3 mb-2">
+                      <UserPlus className="text-[#f42464]" size={24} />
+                      <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tighter italic leading-none">New Identity</h2>
+                   </div>
+                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Registering unique player credentials</p>
                 </div>
                 <button 
                   onClick={() => setShowAddForm(false)}
-                  className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 active:bg-[#f42464] active:text-white transition-all"
+                  className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 active:bg-red-50 active:text-red-500 transition-all border border-gray-100"
                 >
-                  <X size={20} />
+                  <X size={24} />
                 </button>
               </div>
 
-              <form onSubmit={handleAddUser} className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
-                  <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-                    <input 
-                      required
-                      type="text" 
-                      placeholder="Enter player name" 
-                      value={newUser.name}
-                      onChange={e => setNewUser({...newUser, name: e.target.value})}
-                      className="w-full h-12 bg-gray-50 border border-transparent rounded-xl pl-11 pr-4 outline-none font-bold text-gray-800 focus:bg-white focus:border-[#f42464]/20 transition-all text-xs"
-                    />
+              <form onSubmit={handleAddUser} className="space-y-5">
+                {[
+                  { label: 'Full Name', key: 'name', icon: User, type: 'text', placeholder: 'Legal name of player' },
+                  { label: 'Phone Number', key: 'phone', icon: Phone, type: 'tel', placeholder: '+91 00000 00000' },
+                  { label: 'Email (Optional)', key: 'email', icon: Mail, type: 'email', placeholder: 'contact@player.com' },
+                  { label: 'Starting Balance', key: 'balance', icon: Wallet, type: 'number', placeholder: '₹ 0.00' },
+                ].map((field) => (
+                  <div key={field.key} className="space-y-1.5">
+                    <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">{field.label}</label>
+                    <div className="relative group/field">
+                      <field.icon className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/field:text-[#f42464] transition-colors" size={18} />
+                      <input 
+                        required={field.key !== 'email'}
+                        type={field.type} 
+                        placeholder={field.placeholder} 
+                        value={newUser[field.key]}
+                        onChange={e => setNewUser({...newUser, [field.key]: e.target.value})}
+                        className="w-full h-15 bg-gray-50/50 border border-gray-100 rounded-2xl pl-16 pr-6 outline-none font-bold text-gray-800 focus:bg-white focus:border-[#f42464]/20 transition-all text-xs placeholder:text-gray-300"
+                      />
+                    </div>
                   </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Phone Number</label>
-                  <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-                    <input 
-                      required
-                      type="tel" 
-                      placeholder="+91 XXXXX XXXXX" 
-                      value={newUser.phone}
-                      onChange={e => setNewUser({...newUser, phone: e.target.value})}
-                      className="w-full h-12 bg-gray-50 border border-transparent rounded-xl pl-11 pr-4 outline-none font-bold text-gray-800 focus:bg-white focus:border-[#f42464]/20 transition-all text-xs"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Email (Optional)</label>
-                  <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-                    <input 
-                      type="email" 
-                      placeholder="player@example.com" 
-                      value={newUser.email}
-                      onChange={e => setNewUser({...newUser, email: e.target.value})}
-                      className="w-full h-12 bg-gray-50 border border-transparent rounded-xl pl-11 pr-4 outline-none font-bold text-gray-800 focus:bg-white focus:border-[#f42464]/20 transition-all text-xs"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Initial Balance</label>
-                  <div className="relative">
-                    <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-                    <input 
-                      type="number" 
-                      placeholder="₹ 0.00" 
-                      value={newUser.balance}
-                      onChange={e => setNewUser({...newUser, balance: e.target.value})}
-                      className="w-full h-12 bg-gray-50 border border-transparent rounded-xl pl-11 pr-4 outline-none font-bold text-gray-800 focus:bg-white focus:border-[#f42464]/20 transition-all text-xs"
-                    />
-                  </div>
-                </div>
+                ))}
 
                 <button 
                   type="submit"
-                  className="w-full h-14 bg-gray-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 mt-4 active:scale-95 transition-all"
+                  className="w-full h-16 bg-gradient-to-r from-[#f42464] to-[#ff004d] text-white rounded-2xl font-black text-[12px] uppercase tracking-widest shadow-xl shadow-[#f42464]/20 flex items-center justify-center gap-3 mt-6 active:scale-95 transition-all"
                 >
-                  <CheckCircle2 size={18} className="text-emerald-400" /> Create Account
+                   Finalize Registration <CheckCircle2 size={24} className="text-white/40" />
                 </button>
               </form>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-      
-      <div className="pt-4 text-center">
-         <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em]">Listing players by recent activity</p>
-      </div>
     </div>
   );
 };

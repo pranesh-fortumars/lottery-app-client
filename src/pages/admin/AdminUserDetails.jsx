@@ -9,7 +9,11 @@ import {
   Phone,
   Edit,
   Activity,
-  Ticket
+  Ticket,
+  ChevronRight,
+  ShieldCheck,
+  Zap,
+  Star
 } from 'lucide-react';
 
 const AdminUserDetails = () => {
@@ -35,98 +39,130 @@ const AdminUserDetails = () => {
   };
 
   return (
-    <div className="space-y-6 p-4 pb-20">
-      {/* Navigation */}
-      <button 
-        onClick={() => navigate('/admin/users')}
-        className="flex items-center gap-2 text-gray-400 font-black text-[10px] uppercase tracking-widest active:text-[#f42464]"
-      >
-        <ArrowLeft size={16} /> Back to Users
-      </button>
-
-      {/* Profile Card */}
-      <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col items-center">
-         <div className="w-20 h-20 rounded-2xl bg-[#fce4ec] text-[#f42464] flex items-center justify-center font-black text-2xl border border-gray-100 shadow-sm mb-4">
-            {user.name.charAt(0)}
-         </div>
-         <h2 className="text-lg font-black text-gray-800 tracking-tight">{user.name}</h2>
-         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">ID: #{user.id}</p>
+    <div className="space-y-10 p-4 pb-32 min-h-screen bg-[#f8f9fa]">
+      {/* Navigation & Header - Treasure Chest Theme */}
+      <div className="border-[1.5px] border-[#ff004d] rounded-[2.5rem] p-8 bg-white shadow-2xl relative overflow-hidden group">
+         <div className="absolute top-0 right-0 w-32 h-32 bg-[#ff004d]/5 rounded-full blur-3xl"></div>
+         <button 
+           onClick={() => navigate('/admin/users')}
+           className="flex items-center gap-2 text-gray-400 font-black text-[10px] uppercase tracking-widest hover:text-[#f42464] mb-6 transition-colors"
+         >
+           <ArrowLeft size={16} /> Back to Directory
+         </button>
          
-         <div className="flex gap-2 mt-4">
-            <span className="bg-emerald-50 text-emerald-500 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border border-emerald-100">
-               {user.status} Member
+         <div className="flex gap-4 items-center">
+            <div className="w-20 h-20 rounded-[2rem] bg-gray-50 flex items-center justify-center text-[#f42464] font-black text-3xl border border-white shadow-lg transform group-hover:-rotate-6 transition-transform relative">
+               {user.name.charAt(0)}
+               <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-emerald-500 rounded-full border-4 border-white flex items-center justify-center">
+                  <ShieldCheck size={14} className="text-white" />
+               </div>
+            </div>
+            <div className="flex-grow">
+               <h2 className="text-2xl font-black text-gray-900 font-condensed uppercase tracking-tighter italic leading-none">{user.name}</h2>
+               <p className="text-[#ff004d] font-black text-[10px] uppercase tracking-widest leading-none mt-1">Player Rank: Diamond Elite</p>
+               <div className="mt-3 flex gap-2">
+                 <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest border border-emerald-100 flex items-center gap-1">
+                    <Zap size={10} fill="currentColor" /> {user.status}
+                 </span>
+                 <span className="bg-gray-50 text-gray-400 px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest border border-gray-100">
+                    ID: #{user.id}
+                 </span>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      {/* Wallet Dashboard */}
+      <div className="bg-gray-950 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden group">
+         <div className="absolute top-0 right-0 p-6 opacity-10 bg-[#ff004d] rounded-bl-[2.5rem] group-hover:scale-110 transition-transform">
+            <Wallet size={48} />
+         </div>
+         
+         <p className="text-[10px] font-black uppercase tracking-widest text-[#ff004d] mb-4">Secured Vault Balance</p>
+         <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-black italic tracking-tighter">₹ {user.balance.toLocaleString()}</span>
+            <span className="text-emerald-400 font-black text-[10px] uppercase tracking-widest flex items-center gap-1 mb-2">
+               +8.4% <Star size={10} fill="currentColor" />
             </span>
          </div>
-
-         <div className="w-full mt-6 space-y-3 pt-6 border-t border-gray-50">
-            <div className="flex items-center gap-3">
-               <Mail size={14} className="text-gray-300" />
-               <p className="text-xs font-bold text-gray-600">{user.email}</p>
+         
+         <div className="grid grid-cols-2 gap-6 mt-10 pt-10 border-t border-white/5">
+            <div className="space-y-1">
+               <p className="text-[9px] font-black uppercase tracking-widest text-gray-500">Tickets Purchased</p>
+               <p className="text-xl font-black flex items-center gap-2">{user.tickets} <Ticket size={18} className="text-[#ff004d]" /></p>
             </div>
-            <div className="flex items-center gap-3">
-               <Phone size={14} className="text-gray-300" />
-               <p className="text-xs font-bold text-gray-600">{user.phone}</p>
+            <div className="space-y-1">
+               <p className="text-[9px] font-black uppercase tracking-widest text-gray-500">Total Winnings</p>
+               <p className="text-xl font-black text-emerald-400 italic">{user.won}</p>
             </div>
          </div>
       </div>
 
-      {/* Wallet Summary */}
-      <div className="bg-gradient-to-br from-[#f42464] to-[#ff004d] rounded-3xl p-6 text-white shadow-lg">
-         <p className="text-[8px] font-bold uppercase tracking-widest opacity-70 mb-1">Wallet Balance</p>
-         <h3 className="text-2xl font-black">₹{user.balance.toLocaleString()}</h3>
-         
-         <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-white/20">
-            <div>
-               <p className="text-[8px] font-bold uppercase tracking-widest opacity-70">Tickets</p>
-               <p className="text-sm font-black">{user.tickets}</p>
-            </div>
-            <div>
-               <p className="text-[8px] font-bold uppercase tracking-widest opacity-70">Won</p>
-               <p className="text-sm font-black text-yellow-400">{user.won}</p>
-            </div>
+      {/* Credentials & Details */}
+      <div className="bg-white rounded-[2.5rem] p-10 shadow-xl border border-gray-100 space-y-8">
+         <div className="flex items-center gap-3 border-b border-gray-50 pb-6">
+            <ShieldCheck className="text-[#f42464]" size={22} />
+            <h3 className="text-xl font-black font-condensed uppercase tracking-tighter text-gray-800 italic leading-none">Identity Check</h3>
          </div>
-      </div>
-
-      {/* Activity History */}
-      <div className="space-y-4">
-         <h3 className="text-sm font-black text-gray-800 font-condensed uppercase tracking-tight flex items-center gap-2">
-            <History className="text-[#f42464]" size={18} /> Recent Activity
-         </h3>
          
-         <div className="space-y-3">
-            {user.recentActivity.map((act) => (
-               <div key={act.id} className="bg-white rounded-2xl p-4 border border-gray-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                        act.type === 'Purchase' ? 'bg-red-50 text-[#f42464]' :
-                        act.type === 'Win' ? 'bg-emerald-50 text-emerald-600' :
-                        'bg-blue-50 text-blue-600'
-                     }`}>
-                        {act.type === 'Purchase' ? <Ticket size={16} /> :
-                         act.type === 'Win' ? <Activity size={16} /> :
-                         <Wallet size={16} />}
-                     </div>
-                     <div>
-                        <h4 className="text-[10px] font-black text-gray-800">{act.desc}</h4>
-                        <p className="text-[8px] text-gray-400 font-bold uppercase">{act.date}</p>
-                     </div>
-                  </div>
-                  <span className={`text-xs font-black ${act.amount.startsWith('-') ? 'text-red-500' : 'text-emerald-500'}`}>
-                     {act.amount}
-                  </span>
+         <div className="grid grid-cols-1 gap-6">
+            <div className="flex items-center gap-5 p-4 bg-gray-50/50 rounded-2xl border border-gray-50">
+               <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-gray-400"><Mail size={22} /></div>
+               <div>
+                  <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Electronic Mail</p>
+                  <p className="text-sm font-black text-gray-800">{user.email}</p>
                </div>
-            ))}
+            </div>
+            <div className="flex items-center gap-5 p-4 bg-gray-50/50 rounded-2xl border border-gray-50">
+               <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-gray-400"><Phone size={22} /></div>
+               <div>
+                  <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Mobile Interface</p>
+                  <p className="text-sm font-black text-gray-800">{user.phone}</p>
+               </div>
+            </div>
+         </div>
+
+         <div className="space-y-6 pt-4 border-t border-gray-50">
+            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-4">Vault Activity history</h3>
+            <div className="space-y-4">
+               {user.recentActivity.map((act) => (
+                  <div key={act.id} className="flex items-center justify-between p-5 bg-white border border-gray-50 rounded-[1.5rem] shadow-sm active:scale-[0.98] transition-all">
+                     <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center border-2 border-white shadow-sm transition-transform ${
+                           act.type === 'Purchase' ? 'bg-[#fce4ec] text-[#f42464]' :
+                           act.type === 'Win' ? 'bg-emerald-50 text-emerald-600' :
+                           'bg-blue-50 text-blue-600'
+                        }`}>
+                           {act.type === 'Purchase' ? <Ticket size={20} /> :
+                            act.type === 'Win' ? <Activity size={20} /> :
+                            <Wallet size={20} />}
+                        </div>
+                        <div>
+                           <h4 className="text-[11px] font-black text-gray-800 uppercase tracking-tight">{act.desc}</h4>
+                           <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">{act.date}</p>
+                        </div>
+                     </div>
+                     <span className={`text-sm font-black italic tracking-tighter ${act.amount.startsWith('-') ? 'text-red-500' : 'text-emerald-500'}`}>
+                        {act.amount}
+                     </span>
+                  </div>
+               ))}
+            </div>
          </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex gap-3">
-         <button className="flex-1 bg-white border border-gray-100 py-4 rounded-2xl font-black text-[10px] text-red-500 uppercase tracking-widest active:bg-red-50 shadow-sm">
-            Restrict
+      {/* Global Actions */}
+      <div className="flex gap-4">
+         <button className="flex-1 bg-white border-2 border-[#ff004d]/20 text-[#ff004d] py-5 rounded-2xl font-black text-[11px] uppercase tracking-widest active:bg-[#fce4ec] shadow-xl shadow-red-500/5 transition-all">
+            Restrict Entity
          </button>
-         <button className="flex-1 bg-gray-900 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest active:bg-black shadow-lg">
-            Edit Profile
+         <button className="flex-1 bg-gray-900 text-white py-5 rounded-2xl font-black text-[11px] uppercase tracking-widest active:scale-95 shadow-xl shadow-black/10 transition-all flex items-center justify-center gap-2">
+            Edit Profile <Edit size={16} className="text-[#f42464]" />
          </button>
+      </div>
+      
+      <div className="pt-10 text-center opacity-30">
+         <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] italic">Full Trace Audit Record #640-2A</p>
       </div>
     </div>
   );

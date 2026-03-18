@@ -12,7 +12,10 @@ import {
   LayoutDashboard,
   Megaphone,
   Settings2,
-  Users
+  Users,
+  BarChart3,
+  Settings,
+  ShieldAlert
 } from 'lucide-react';
 
 export const Header = ({ title = "DIAMOND AGENCY" }) => {
@@ -20,22 +23,24 @@ export const Header = ({ title = "DIAMOND AGENCY" }) => {
   const { logout, user } = useAuth();
 
   return (
-    <header className="bg-gradient-to-r from-[#f42464] to-[#ff5c8a] text-white flex items-center justify-between px-4 z-[1000] shadow-md w-full shrink-0" style={{ height: '60px' }}>
+    <header className="bg-gradient-to-r from-[#ff004d] to-[#ff4d8a] text-white flex items-center justify-between px-4 z-[1000] shadow-lg w-full shrink-0 border-b border-white/10" style={{ height: '70px' }}>
       <div className="flex items-center gap-3">
-        <h1 className="text-xl font-condensed font-black tracking-tighter uppercase whitespace-nowrap">{title}</h1>
+        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/10 shadow-inner">
+           <img src="https://img.icons8.com/color/48/000000/treasure-chest.png" alt="Logo" className="w-7 h-7" />
+        </div>
+        <h1 className="text-lg font-condensed font-black tracking-tighter uppercase italic leading-none">{title}</h1>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         {user && (
           <button 
             onClick={() => { logout(); navigate('/login'); }}
-            className="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-lg hover:bg-white/30 transition-all font-bold"
+            className="text-[9px] font-black uppercase tracking-widest bg-black/20 px-3 py-1.5 rounded-lg border border-white/10 hover:bg-black/30 transition-all"
           >
             Logout
           </button>
         )}
-        <Download size={24} className="cursor-pointer hover:scale-110 active:scale-90 transition-transform" />
-        <NavLink to="/profile" className="hover:scale-110 active:scale-90 transition-transform">
-          <User size={28} />
+        <NavLink to="/profile" className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center hover:bg-white/20 transition-all border border-white/5">
+          <User size={22} strokeWidth={2.5} />
         </NavLink>
       </div>
     </header>
@@ -46,44 +51,50 @@ export const BottomNav = () => {
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
 
+  const userLinks = [
+    { to: '/home', icon: HomeIcon },
+    { to: '/rules', icon: Gavel },
+    { to: '/results', icon: ScrollText },
+    { to: '/cart', icon: ShoppingCart },
+  ];
+
+  const adminLinks = [
+    { to: '/admin', icon: LayoutDashboard },
+    { to: '/admin/announcements', icon: Megaphone },
+    { to: '/admin/control', icon: ShieldAlert },
+    { to: '/admin/users', icon: Users },
+    { to: '/admin/reports', icon: BarChart3 },
+    { to: '/admin/settings', icon: Settings },
+  ];
+
+  const links = isAdmin ? adminLinks : userLinks;
+
   return (
-    <div className="w-full max-w-[480px] z-[1000] shadow-[0_-4px_15px_rgba(0,0,0,0.1)] rounded-t-3xl border-t border-[#f42464]/20 overflow-hidden mt-auto">
-      <div className="bg-[#f42464] text-white py-2 text-center font-condensed font-black text-sm tracking-wide border-b border-white/10 uppercase">
-        {isAdmin ? 'DIAMOND ADMIN CONTROL' : "INDIA'S LARGEST PRIZES AGENCY"}
+    <div className="w-full max-w-[480px] z-[1000] shadow-[0_-10px_30px_rgba(255,0,77,0.15)] rounded-t-[2.5rem] bg-white border-t border-gray-100 overflow-hidden mt-auto">
+      <div className="bg-gray-950 text-white py-2 text-center font-black text-[9px] tracking-widest border-b border-white/5 uppercase">
+        {isAdmin ? '🛡️ Diamond Secretariat Command' : "💎 Official Diamond Agency Node"}
       </div>
       
-      <nav className="bg-[#f42464] flex justify-around items-center py-3.5 px-2">
-        {!isAdmin ? (
-          <>
-            <NavLink to="/home" className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-70 hover:opacity-100 hover:scale-110'}`}>
-              <HomeIcon size={28} />
-            </NavLink>
-            <NavLink to="/rules" className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-70 hover:opacity-100 hover:scale-110'}`}>
-              <Gavel size={28} />
-            </NavLink>
-            <NavLink to="/results" className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-70 hover:opacity-100 hover:scale-110'}`}>
-              <ScrollText size={28} />
-            </NavLink>
-            <NavLink to="/cart" className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-70 hover:opacity-100 hover:scale-110'}`}>
-              <ShoppingCart size={28} />
-            </NavLink>
-          </>
-        ) : (
-          <>
-            <NavLink to="/admin" end className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-70 hover:opacity-100 hover:scale-110'}`}>
-              <LayoutDashboard size={28} />
-            </NavLink>
-            <NavLink to="/admin/announcements" className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-70 hover:opacity-100 hover:scale-110'}`}>
-              <Megaphone size={28} />
-            </NavLink>
-            <NavLink to="/admin/control" className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-70 hover:opacity-100 hover:scale-110'}`}>
-              <Settings2 size={28} />
-            </NavLink>
-            <NavLink to="/admin/users" className={({ isActive }) => `text-white transition-all ${isActive ? 'scale-125' : 'opacity-70 hover:opacity-100 hover:scale-110'}`}>
-              <Users size={28} />
-            </NavLink>
-          </>
-        )}
+      <nav className="flex justify-around items-center py-5 px-4 bg-white">
+        {links.map((link, idx) => (
+          <NavLink 
+            key={idx}
+            to={link.to} 
+            end={link.to === '/admin'}
+            className={({ isActive }) => `transition-all duration-300 flex flex-col items-center gap-1 ${
+              isActive 
+                ? 'text-[#ff004d] scale-110 drop-shadow-[0_0_8px_rgba(255,0,77,0.3)]' 
+                : 'text-gray-300 hover:text-gray-400'
+            }`}
+          >
+            {({ isActive }) => (
+              <>
+                <link.icon size={26} strokeWidth={2.5} />
+                <div className={`w-1 h-1 rounded-full bg-[#ff004d] transition-all duration-300 ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}></div>
+              </>
+            )}
+          </NavLink>
+        ))}
       </nav>
     </div>
   );
@@ -91,7 +102,7 @@ export const BottomNav = () => {
 
 const PageWrapper = ({ children, title, showNav = true, showHeader = true }) => {
   return (
-    <div className="flex flex-col min-h-screen w-full bg-[#f9f9f9] relative max-w-[480px] mx-auto shadow-2xl overflow-x-hidden">
+    <div className="flex flex-col min-h-screen w-full bg-[#f9f9f9] relative max-w-[480px] mx-auto shadow-2xl overflow-x-hidden border-x border-gray-100">
       {showHeader && <Header title={title} />}
       <motion.main 
         initial={{ opacity: 0 }}

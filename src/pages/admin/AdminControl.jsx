@@ -7,7 +7,11 @@ import {
   AlertCircle,
   Clock,
   Zap,
-  ShieldCheck
+  ShieldCheck,
+  Target,
+  Gamepad2,
+  Lock,
+  ChevronRight
 } from 'lucide-react';
 
 const AdminControl = () => {
@@ -18,49 +22,61 @@ const AdminControl = () => {
   ]);
 
   return (
-    <div className="space-y-6 pb-20 p-4">
-      {/* Global Status Banner */}
-      <div className="bg-gray-900 rounded-3xl p-6 text-white shadow-xl">
-         <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-[#f42464] flex items-center justify-center shadow-[0_0_20px_rgba(244,36,100,0.4)]">
-               <Zap size={24} fill="white" />
-            </div>
-            <div>
-               <h2 className="text-lg font-black uppercase tracking-tight font-condensed">Engine Active</h2>
-               <p className="text-[8px] font-bold text-[#f42464] uppercase tracking-widest">Processing Live Slots</p>
+    <div className="space-y-10 pb-32 p-4 min-h-screen bg-[#f8f9fa]">
+      {/* Global Status Banner - Treasure Chest Theme */}
+      <div className="border-[1.5px] border-[#ff004d] rounded-[2.5rem] p-8 bg-gray-900 text-white shadow-2xl relative overflow-hidden group">
+         <div className="absolute top-0 right-0 w-32 h-32 bg-[#ff004d]/20 rounded-full blur-3xl"></div>
+         <div className="flex gap-4 items-center mb-8">
+            <img src="https://img.icons8.com/color/64/000000/treasure-chest.png" alt="Chest" className="w-16 h-16 drop-shadow-xl group-hover:scale-110 transition-transform" />
+            <div className="flex-grow">
+               <h2 className="text-2xl font-black text-white font-condensed uppercase tracking-tighter italic">Engine Core</h2>
+               <p className="text-[#ff004d] font-black text-[10px] uppercase tracking-widest leading-none mt-1">Live Draw Management</p>
             </div>
          </div>
          
-         <div className="flex gap-2">
-            <button className="flex-1 bg-white/10 p-3 rounded-xl font-black text-[10px] uppercase tracking-widest">Restart</button>
-            <button className="flex-1 bg-red-600 p-3 rounded-xl font-black text-[10px] uppercase tracking-widest">Stop</button>
+         <div className="flex gap-4 justify-between bg-white/5 p-5 rounded-2xl border border-white/5">
+            <div className="flex items-center gap-3">
+               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping shadow-[0_0_10px_rgba(16,185,129,0.8)]"></div>
+               <span className="text-[10px] font-black uppercase tracking-widest text-[#f42464]">Active Node Proxy</span>
+            </div>
+            <div className="flex gap-3">
+               <button className="bg-white/10 px-4 py-2 rounded-xl text-[9px] font-black uppercase hover:bg-white/20 transition-colors">Safety Lock</button>
+               <button className="bg-red-600 px-4 py-2 rounded-xl text-[9px] font-black uppercase hover:bg-red-700 transition-colors">Kill Engine</button>
+            </div>
          </div>
       </div>
 
-      <div className="space-y-8">
+      {/* Main Controls Grid */}
+      <div className="space-y-10">
         {/* Slot Controls */}
-        <div className="space-y-4">
-           <h3 className="text-sm font-black text-gray-800 font-condensed uppercase tracking-tight flex items-center gap-2">
-              <Settings2 className="text-[#f42464]" size={20} /> Slot Management
-           </h3>
+        <div className="space-y-6">
+           <div className="flex items-center gap-3 ml-2">
+              <Gamepad2 className="text-[#f42464]" size={20} />
+              <h3 className="text-xl font-black text-gray-800 font-condensed uppercase tracking-tighter italic leading-none">Live Slot Control</h3>
+           </div>
            
-           <div className="space-y-3">
+           <div className="space-y-4">
               {activeLotteries.map((item) => (
-                <div key={item.id} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm flex items-center justify-between">
-                   <div className="flex items-center gap-3">
-                      <div className={`w-2 h-2 rounded-full ${
-                        item.status === 'Running' ? 'bg-emerald-500 animate-ping' : 
-                        item.status === 'Paused' ? 'bg-orange-500' : 'bg-blue-500'
-                      }`} />
+                <div key={item.id} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-lg flex items-center justify-between group active:scale-[0.98] transition-all hover:border-[#f42464]/20 relative overflow-hidden">
+                   <div className="flex items-center gap-5 relative z-10">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-lg border border-white shadow-sm ${
+                        item.status === 'Running' ? 'bg-[#fce4ec] text-[#f42464]' : 'bg-gray-50 text-gray-300'
+                      }`}>
+                         {item.status === 'Running' ? <Zap size={20} fill="currentColor" /> : <Lock size={20} />}
+                      </div>
                       <div>
-                         <h4 className="font-black text-gray-800 text-xs tracking-tight">{item.name}</h4>
-                         <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest">{item.status} • {item.entries}</p>
+                         <h4 className="font-black text-gray-800 text-sm tracking-tight uppercase italic">{item.name}</h4>
+                         <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[9px] text-[#f42464] font-black uppercase tracking-widest">{item.status}</span>
+                            <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
+                            <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{item.entries} Submissions</span>
+                         </div>
                       </div>
                    </div>
                    
-                   <div className="flex gap-1.5">
-                      <button className="p-2 rounded-lg bg-gray-50 text-gray-400 active:bg-gray-100"><Play size={14} /></button>
-                      <button className="p-2 rounded-lg bg-gray-50 text-gray-400 active:bg-gray-100"><RefreshCcw size={14} /></button>
+                   <div className="flex gap-2 relative z-10">
+                      <button className="p-3 rounded-xl bg-gray-50 text-gray-400 hover:text-gray-900 transition-colors border border-gray-100"><Play size={18} fill="currentColor" /></button>
+                      <button className="p-3 rounded-xl bg-gray-50 text-gray-400 hover:text-emerald-500 transition-colors border border-gray-100"><RefreshCcw size={18} /></button>
                    </div>
                 </div>
               ))}
@@ -68,31 +84,43 @@ const AdminControl = () => {
         </div>
 
         {/* Global Parameters */}
-        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-6">
-           <h3 className="text-sm font-black text-gray-800 font-condensed uppercase tracking-tight flex items-center gap-2">
-              <ShieldCheck className="text-[#f42464]" size={20} /> Game Settings
-           </h3>
-           
-           <div className="space-y-4">
-              {[
-                { label: 'Ticket Price', value: '11', unit: '₹' },
-                { label: 'Max Tickets', value: '5000', unit: '#' },
-                { label: 'Deadline (min)', value: '15', unit: '⏰' },
-              ].map((param, idx) => (
-                <div key={idx} className="space-y-1">
-                   <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest ml-1">{param.label}</label>
-                   <div className="flex items-center bg-gray-50 border border-gray-100 rounded-xl px-4 h-12">
-                      <span className="font-black text-gray-400 text-xs mr-2">{param.unit}</span>
-                      <input type="number" defaultValue={param.value} className="bg-transparent border-none outline-none font-black text-gray-800 text-sm w-full" />
-                   </div>
-                </div>
-              ))}
+        <div className="space-y-6 pt-4 border-t border-gray-100">
+           <div className="flex items-center gap-3 ml-2">
+              <ShieldCheck className="text-[#f42464]" size={20} />
+              <h3 className="text-xl font-black text-gray-800 font-condensed uppercase tracking-tighter italic leading-none">Security Parameters</h3>
            </div>
 
-           <button className="w-full bg-[#f42464] text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-md active:scale-95">
-              Apply Changes
-           </button>
+           <div className="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-xl space-y-8">
+              <div className="grid grid-cols-1 gap-6">
+                {[
+                  { label: 'Platform Commission (%)', value: '10', icon: Target, unit: '%' },
+                  { label: 'Daily Booking Cap/Slot', value: '5000', icon: CreditCard, unit: '#' },
+                  { label: 'Booking Offset (Minutes)', value: '15', icon: Clock, unit: '⏰' },
+                ].map((param, idx) => (
+                  <div key={idx} className="space-y-2 group/param">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2 block group-focus-within/param:text-[#f42464] transition-colors">{param.label}</label>
+                    <div className="flex items-center bg-gray-50/50 border border-gray-100 rounded-2xl px-6 h-16 group-focus-within/param:border-[#f42464]/20 group-focus-within/param:bg-white transition-all shadow-sm">
+                       <param.icon className="text-[#f42464] opacity-20 mr-4" size={24} />
+                       <input 
+                         type="number" 
+                         defaultValue={param.value} 
+                         className="bg-transparent border-none outline-none font-black text-gray-800 text-lg w-full placeholder:text-gray-200" 
+                       />
+                       <span className="font-black text-gray-300 text-[10px] uppercase ml-2">{param.unit}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <button className="w-full h-16 bg-gray-900 text-white rounded-2xl font-black text-[12px] uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 active:scale-95 transition-all shadow-black/10">
+                 Apply Global Safeguards <ChevronRight size={20} className="text-[#f42464]" />
+              </button>
+           </div>
         </div>
+      </div>
+
+      <div className="pt-8 text-center opacity-30">
+         <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Hardware Encrypted Authority Portal</p>
       </div>
     </div>
   );
