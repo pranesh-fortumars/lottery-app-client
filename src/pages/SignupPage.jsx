@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { User, Phone, Users, Key, ChevronRight, LogIn } from 'lucide-react';
 import PageWrapper from '../components/PageWrapper';
+import { User, Phone, Users, ChevronRight, LogIn } from 'lucide-react';
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -14,88 +13,80 @@ const SignupPage = () => {
 
   const handleSignup = (e) => {
     e.preventDefault();
-    // Logic for signup
     console.log("Signup attempt:", formData);
   };
 
   return (
-    <PageWrapper title="PLAYER REGISTRATION" showNav={false}>
-      <div className="bg-white min-h-screen px-6 py-12 flex flex-col items-center">
-        {/* Logo/Icon section */}
-        <div className="mb-12 text-center">
-           <div className="w-20 h-20 bg-gradient-to-br from-[#f42464] to-[#ff004d] rounded-3xl flex items-center justify-center text-white shadow-2xl shadow-[#f42464]/30 rotate-6 mb-6 mx-auto">
-              <User size={40} strokeWidth={2.5} />
-           </div>
-           <h2 className="text-3xl font-black text-gray-900 font-condensed uppercase tracking-tighter">Join the Agency</h2>
-           <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mt-2 italic">Empowering your fortune every draw</p>
-        </div>
-
-        <form onSubmit={handleSignup} className="w-full space-y-6">
-          <div className="space-y-4">
-            {/* Name Input */}
-            <div className="relative group">
-              <User className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#f42464] transition-colors" size={20} />
-              <input 
-                type="text" 
-                placeholder="Full Name" 
-                className="w-full h-16 bg-gray-50 border-2 border-transparent rounded-2xl pl-16 pr-6 outline-none font-bold text-gray-800 shadow-sm focus:bg-white focus:border-[#f42464]/20 transition-all text-sm placeholder:text-gray-300"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-              />
+    <PageWrapper title="MEMBER REGISTRATION" showNav={false}>
+      <div className="bg-white min-h-screen p-4 flex flex-col items-center pt-10">
+        <form onSubmit={handleSignup} className="w-full space-y-4">
+          {/* Name Input */}
+          <div className="flex border border-gray-200 rounded-2xl overflow-hidden h-14 bg-gray-50/50 shadow-sm focus-within:border-[#f42464]/30 transition-all">
+            <div className="bg-gray-100/50 px-5 flex items-center justify-center border-r border-gray-100 text-gray-400">
+               <User size={18} />
             </div>
-
-            {/* Mobile Input */}
-            <div className="relative group">
-              <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs uppercase">+91</span>
-              <input 
-                type="tel" 
-                placeholder="Mobile Number" 
-                className="w-full h-16 bg-gray-50 border-2 border-transparent rounded-2xl pl-16 pr-6 outline-none font-bold text-gray-800 shadow-sm focus:bg-white focus:border-[#f42464]/20 transition-all text-sm placeholder:text-gray-300"
-                value={formData.mobile}
-                onChange={(e) => setFormData({...formData, mobile: e.target.value})}
-              />
-            </div>
-
-            {/* Referral Input */}
-            <div className="relative group border-t border-gray-50 pt-4">
-              <div className="mb-2 ml-1 text-[9px] font-black text-gray-400 uppercase tracking-widest">Optional</div>
-              <Users className="absolute left-6 top-[72px] -translate-y-1/2 text-gray-300 group-focus-within:text-blue-500 transition-colors" size={20} />
-              <input 
-                type="text" 
-                placeholder="Referral Code (If any)" 
-                className="w-full h-16 bg-blue-50/30 border-2 border-transparent rounded-2xl pl-16 pr-6 outline-none font-bold text-gray-600 shadow-sm focus:bg-white focus:border-blue-500/20 transition-all text-sm placeholder:text-gray-300"
-                value={formData.referral}
-                onChange={(e) => setFormData({...formData, referral: e.target.value})}
-              />
-            </div>
+            <input 
+              className="flex-grow px-4 outline-none border-none focus:ring-0 text-sm font-bold text-gray-700 bg-transparent placeholder:text-gray-300" 
+              placeholder="Enter your name" 
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+            />
           </div>
 
-          <div className="pt-4 space-y-4">
-            <button 
-              type="submit"
-              className="w-full h-16 bg-gradient-to-r from-[#f42464] to-[#ff004d] rounded-2xl font-black text-[12px] text-white uppercase tracking-widest shadow-xl shadow-[#f42464]/20 active:scale-95 transition-all flex items-center justify-center gap-3"
-            >
-              Get Secure OTP <ChevronRight size={20} />
-            </button>
-
-            <div className="flex items-center gap-3 py-2">
-               <div className="h-px bg-gray-100 flex-grow"></div>
-               <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Already a member?</span>
-               <div className="h-px bg-gray-100 flex-grow"></div>
+          {/* Mobile Number Input */}
+          <div className="flex border border-gray-200 rounded-2xl overflow-hidden h-14 bg-gray-50/50 shadow-sm focus-within:border-[#f42464]/30 transition-all">
+            <div className="bg-gray-100/50 px-4 flex items-center justify-center border-r border-gray-100 text-gray-400 font-black text-[10px] uppercase tracking-widest">
+              +91
             </div>
+            <input 
+              className="flex-grow px-4 outline-none border-none focus:ring-0 text-sm font-bold text-gray-700 bg-transparent placeholder:text-gray-300" 
+              placeholder="Mobile Number" 
+              type="tel"
+              value={formData.mobile}
+              onChange={(e) => setFormData({...formData, mobile: e.target.value})}
+            />
+          </div>
 
-            <button 
-              type="button"
-              onClick={() => navigate('/login')}
-              className="w-full h-16 bg-white border-2 border-gray-100 rounded-2xl font-black text-[12px] text-gray-700 uppercase tracking-widest active:scale-95 transition-all flex items-center justify-center gap-3 hover:bg-gray-50"
-            >
-              Sign In to Account <LogIn size={18} className="text-[#f42464]" />
+          {/* Referral Code Input */}
+          <div className="flex border border-gray-200 rounded-2xl overflow-hidden h-14 bg-gray-50/50 shadow-sm focus-within:border-blue-200 transition-all">
+            <div className="bg-gray-100/50 px-5 flex items-center justify-center border-r border-gray-100 text-gray-400">
+               <Users size={18} />
+            </div>
+            <input 
+              className="flex-grow px-4 outline-none border-none focus:ring-0 text-sm font-bold text-gray-700 bg-transparent placeholder:text-gray-300" 
+              placeholder="Refferal code (Optional)" 
+              type="text"
+              value={formData.referral}
+              onChange={(e) => setFormData({...formData, referral: e.target.value})}
+            />
+          </div>
+
+          <div className="pt-6 space-y-4">
+            <button className="w-full bg-[#ff0000] text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2" type="submit">
+               Get OTP <ChevronRight size={16} />
             </button>
+            <div className="flex gap-4">
+              <button 
+                className="flex-1 bg-white border border-gray-100 text-gray-400 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest hover:border-[#ff0000] hover:text-[#ff0000] transition-all" 
+                type="button"
+                onClick={() => navigate('/login')}
+              >
+                Login
+              </button>
+              <button 
+                className="flex-[2] bg-white border border-gray-100 text-gray-400 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest hover:border-[#ff0000] hover:text-[#ff0000] transition-all" 
+                type="button"
+                onClick={() => navigate('/reset-password')}
+              >
+                Reset Password
+              </button>
+            </div>
           </div>
         </form>
 
-        <div className="mt-auto pt-12 text-center">
-           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">India's Most Trusted Agency</p>
+        <div className="mt-auto py-10 opacity-30 text-center">
+           <p className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-400 italic">India's Largest Prizes Agency</p>
         </div>
       </div>
     </PageWrapper>

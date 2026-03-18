@@ -47,7 +47,6 @@ const JackpotPage = () => {
   const [activeSlot, setActiveSlot] = useState(firstActiveSlot);
 
   const abcTiers = [
-    { price: "0.00", win: "₹ 10000, 1000" },
     { price: "12.00", win: "₹ 6250, 250, 25" },
     { price: "28.00", win: "₹ 15000, 500, 50" },
     { price: "30.00", win: "₹ 17500, 500, 50" },
@@ -57,7 +56,7 @@ const JackpotPage = () => {
 
   return (
     <PageWrapper title="DIAMOND JACKPOT LOTTERY" showNav={true}>
-      <div className="bg-[#f9f9f9] min-h-screen pb-24">
+      <div className="bg-[#f9f9f9] min-h-screen">
         <div className="bg-[#fce4ec] py-3 px-4 shadow-sm border-b border-white/50 text-center mb-4">
            <p className="text-white bg-[#ff1c74] inline-block px-5 py-2 rounded-full text-[10px] font-black tracking-wide uppercase">
              Jackpot lot purchase open till 15 mins before draw
@@ -66,10 +65,10 @@ const JackpotPage = () => {
 
         <div className="p-4">
           <div className="flex gap-4 mb-8">
-             <button onClick={() => navigate('/rules')} className="flex-1 bg-[#ff004d] text-white py-3 rounded-xl flex items-center justify-center gap-2 font-black shadow-[0_8px_20px_rgba(255,0,77,0.25)] uppercase tracking-tight">
+             <button onClick={() => navigate('/rules')} className="flex-1 bg-[#ff004d] text-white py-3 rounded-xl flex items-center justify-center gap-2 font-black shadow-lg uppercase tracking-tight">
                 <Gavel size={20} /> Rules
              </button>
-             <button onClick={() => navigate('/results')} className="flex-1 bg-[#ff004d] text-white py-3 rounded-xl flex items-center justify-center gap-2 font-black shadow-[0_8px_20px_rgba(255,0,77,0.25)] uppercase tracking-tight">
+             <button onClick={() => navigate('/results')} className="flex-1 bg-[#ff004d] text-white py-3 rounded-xl flex items-center justify-center gap-2 font-black shadow-lg uppercase tracking-tight">
                 <ScrollText size={20} /> Results
              </button>
           </div>
@@ -106,7 +105,7 @@ const JackpotPage = () => {
         <div className="w-full max-w-[480px] p-4 bg-transparent z-50">
            <button 
              onClick={() => navigate('/cart')}
-             className="w-full bg-[#ff0055] text-white py-4 rounded-xl flex items-center justify-center gap-2 font-black text-xl shadow-[0_8px_30px_rgba(255,0,85,0.4)] relative"
+             className="w-full bg-[#ff0055] text-white py-4 rounded-xl flex items-center justify-center gap-2 font-black text-xl shadow-xl relative"
            >
              <ShoppingCart size={24} /> Pay now
              {cart.length > 0 && (

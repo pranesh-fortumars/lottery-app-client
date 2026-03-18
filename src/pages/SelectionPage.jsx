@@ -24,7 +24,7 @@ const SelectionPage = () => {
   const isClosed = (drawTime) => {
     if (!drawTime) return false;
     const now = new Date();
-    const parts = drawTime.match(/(\d+):(\d+)\s*(AM|PM)/);
+    const parts = drawTime.match(/(\d+)[.:](\d+)\s*(AM|PM)/);
     if (!parts) return true;
     
     let hours = parseInt(parts[1]);
@@ -65,20 +65,20 @@ const SelectionPage = () => {
   ];
 
   return (
-    <PageWrapper title="DIAMOND JACKPOT LOTTERY" showNav={true}>
-      <div className="bg-[#f9f9f9] min-h-screen pb-24">
-        <div className={`py-3 px-4 shadow-sm border-b border-white/50 text-center mb-4 ${closed ? 'bg-gray-800' : 'bg-[#fce4ec]'}`}>
-           <p className={`inline-block px-5 py-2 rounded-full text-[10px] font-black tracking-wide uppercase ${closed ? 'text-white bg-red-600 animate-pulse' : 'text-white bg-[#ff1c74]'}`}>
+    <PageWrapper title={getGameName().toUpperCase()} showNav={true}>
+      <div className="bg-[#f9f9f9] min-h-screen">
+        <div className={`py-3 px-4 shadow-sm border-b border-white/50 text-center mb-4 ${closed ? 'bg-red-600' : 'bg-[#fce4ec]'}`}>
+           <p className="text-white inline-block px-5 py-2 rounded-full text-[10px] font-black tracking-wide uppercase">
              {closed ? 'BOOKING CLOSED FOR THIS DRAW' : (isKerala ? 'Booking ends at 02:45 PM' : 'Booking ends 15 mins before draw')}
            </p>
         </div>
 
-        <div className={`p-4 transition-all ${closed ? 'opacity-40 pointer-events-none grayscale' : ''}`}>
+        <div className={`p-4 ${closed ? 'opacity-50 pointer-events-none' : ''}`}>
           <div className="flex gap-4 mb-8">
-             <button onClick={() => navigate('/rules')} className="flex-1 bg-[#ff004d] text-white py-3 rounded-xl flex items-center justify-center gap-2 font-black shadow-[0_8px_20px_rgba(255,0,77,0.25)] uppercase tracking-tight">
+             <button onClick={() => navigate('/rules')} className="flex-1 bg-[#ff004d] text-white py-3 rounded-xl flex items-center justify-center gap-2 font-black shadow-lg uppercase tracking-tight">
                 <Gavel size={20} /> Rules
              </button>
-             <button onClick={() => navigate('/results')} className="flex-1 bg-[#ff004d] text-white py-3 rounded-xl flex items-center justify-center gap-2 font-black shadow-[0_8px_20px_rgba(255,0,77,0.25)] uppercase tracking-tight">
+             <button onClick={() => navigate('/results')} className="flex-1 bg-[#ff004d] text-white py-3 rounded-xl flex items-center justify-center gap-2 font-black shadow-lg uppercase tracking-tight">
                 <ScrollText size={20} /> Results
              </button>
           </div>
@@ -103,25 +103,11 @@ const SelectionPage = () => {
           )}
         </div>
 
-        {closed && (
-          <div className="mx-6 p-6 bg-white border-2 border-red-600 rounded-3xl text-center space-y-3 shadow-2xl relative z-10 -mt-10">
-             <Lock className="mx-auto text-red-600" size={48} />
-             <h3 className="text-xl font-black text-gray-900 uppercase">Lottery Closed</h3>
-             <p className="text-sm font-bold text-gray-400">This draw is no longer accepting entries. Please try the next available slot.</p>
-             <button 
-               onClick={() => navigate('/home')}
-               className="w-full bg-gray-900 text-white py-3 rounded-xl font-black uppercase tracking-widest text-xs"
-             >
-               Explore Next Slot
-             </button>
-          </div>
-        )}
-
         <div className="w-full max-w-[480px] p-4 bg-transparent z-50">
            <button 
              onClick={() => navigate('/cart')}
              disabled={closed}
-             className={`w-full text-white py-4 rounded-xl flex items-center justify-center gap-2 font-black text-xl shadow-[0_8px_30px_rgba(255,0,85,0.4)] relative ${closed ? 'bg-gray-400' : 'bg-[#ff0055]'}`}
+             className={`w-full text-white py-4 rounded-xl flex items-center justify-center gap-2 font-black text-xl shadow-xl relative ${closed ? 'bg-gray-400' : 'bg-[#ff0055]'}`}
            >
              <ShoppingCart size={24} /> {closed ? 'Closed' : 'Pay now'}
              {cart.length > 0 && !closed && (

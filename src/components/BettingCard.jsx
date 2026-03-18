@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { Sparkles, Plus, Minus, Ticket } from 'lucide-react';
 
 const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digits = 1, gameName = "Dear Lottery", priceOptions = [] }) => {
   const { addToCart } = useCart();
   const [selectedTier, setSelectedTier] = useState(priceOptions.length > 0 ? priceOptions[0] : null);
   
   const currentPrice = selectedTier ? selectedTier.price : initialPrice;
-  const currentWinText = selectedTier ? `Win ${selectedTier.win}` : initialWinText;
+  const currentWinText = selectedTier ? `Win ${selectedTier.win}` : (initialWinText || "");
 
   const [rows, setRows] = useState([
     { id: 1, numbers: Array(digits).fill(''), qty: 1 },
@@ -53,108 +52,91 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
     setRows(newRows);
   };
 
-  return (
-    <div className="bg-white rounded-[2.5rem] p-6 mb-8 shadow-sm border border-gray-100 relative overflow-hidden group">
-      {/* Dynamic Glow Background */}
-      <div className="absolute -top-12 -right-12 w-32 h-32 bg-[#f42464]/5 rounded-full blur-3xl group-hover:bg-[#f42464]/10 transition-colors"></div>
+  const handleRandom = (rowIdx) => {
+    const newRows = [...rows];
+    newRows[rowIdx].numbers = Array(digits).fill(0).map(() => Math.floor(Math.random() * 10).toString());
+    setRows(newRows);
+  };
 
-      <div className="flex items-start gap-4 mb-6 relative z-10">
-        <div className="w-16 h-16 bg-gradient-to-br from-[#f42464] to-[#ff004d] rounded-2xl flex items-center justify-center text-white shadow-xl shadow-[#f42464]/20 rotate-3 p-3">
-           <Ticket size={32} strokeWidth={2.5} />
-        </div>
+  return (
+    <div className="border-[1.5px] border-[#ff004d] rounded-2xl p-4 mb-6 bg-white shadow-xl relative overflow-hidden">
+      <div className="flex gap-4 mb-3 border-b border-gray-100 pb-3">
+        <img src="https://img.icons8.com/color/64/000000/treasure-chest.png" alt="Chest" className="w-14 h-14 drop-shadow-md" />
         <div className="flex-grow">
-          <h3 className="text-gray-900 font-black text-xl leading-tight uppercase tracking-tighter italic">
+          <h3 className="text-gray-900 font-black text-lg leading-tight uppercase tracking-tight">
             {title}
           </h3>
-          <p className="text-[#f42464] font-black text-[9px] uppercase tracking-[0.2em] mt-1 opacity-60">
-            Win up to {(initialWinText || selectedTier?.win || "").replace('Win ', '')}
+          <p className="text-[#ff004d] font-black text-[10px] uppercase tracking-tight leading-none mb-1">
+            {currentWinText.includes('Win ') ? currentWinText : `Win ${currentWinText}`}
           </p>
-          <div className="flex items-center gap-2 mt-2">
-             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Starts at</span>
-             <span className="text-emerald-600 font-black text-base italic">₹ {currentPrice}</span>
-          </div>
+          <p className="text-[#ff004d] font-black text-xl leading-none">₹ {currentPrice}</p>
         </div>
+        <button 
+          onClick={() => rows.forEach((_, i) => handleRandom(i))}
+          className="bg-gray-700 text-white text-[10px] px-3 py-1.5 rounded-lg h-fit font-black uppercase shadow-sm active:scale-95 transition-transform"
+        >
+          Random All
+        </button>
       </div>
 
       {priceOptions.length > 0 && (
-        <div className="flex overflow-x-auto gap-3 mb-8 pb-1 scrollbar-hide">
+        <div className="flex overflow-x-auto gap-2 mb-4 pb-2 scrollbar-hide">
           {priceOptions.map((opt, idx) => (
             <button
               key={idx}
               onClick={() => setSelectedTier(opt)}
-              className={`flex-shrink-0 px-5 py-3 rounded-2xl text-[10px] font-black uppercase transition-all flex flex-col items-center gap-1 ${
+              className={`flex-shrink-0 px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all border-2 ${
                 selectedTier?.price === opt.price 
-                  ? 'bg-gray-900 text-white shadow-lg scale-105 border-b-4 border-[#f42464]' 
-                  : 'bg-gray-50 text-gray-400 border border-gray-100 hover:bg-white hover:border-gray-200'
+                  ? 'bg-[#ff004d] text-white border-[#ff004d] shadow-md scale-105' 
+                  : 'bg-gray-50 text-gray-400 border-gray-100 hover:border-gray-300'
               }`}
             >
-              <span className="opacity-40 text-[8px]">PRICE</span>
-              <span>₹ {opt.price}</span>
+              ₹ {opt.price}
             </button>
           ))}
         </div>
       )}
 
-      <div className="space-y-6 relative z-10">
-        <div className="flex justify-between items-center mb-2 px-1">
-           <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Select Numbers</span>
-           <button 
-             onClick={() => {
-                const newRows = rows.map(r => ({
-                  ...r,
-                  numbers: Array(digits).fill(0).map(() => Math.floor(Math.random() * 10).toString())
-                }));
-                setRows(newRows);
-             }}
-             className="text-[#f42464] text-[9px] font-black uppercase tracking-widest flex items-center gap-1 hover:opacity-70 transition-opacity"
-           >
-             <Sparkles size={12} /> Auto Pick All
-           </button>
-        </div>
-
+      <div className="space-y-5">
         {rows.map((row, rowIdx) => (
-          <div key={row.id} className="bg-gray-50/50 rounded-2xl p-4 flex flex-col gap-4 border border-transparent hover:border-gray-100 hover:bg-white transition-all shadow-sm hover:shadow-md">
-             <div className="flex items-center justify-between">
-                <div className="flex gap-2">
-                   {row.numbers.map((num, digIdx) => (
-                     <div key={digIdx} className="relative group/input">
-                        <input 
-                          id={`input-${title}-${rowIdx}-${digIdx}`}
-                          type="text" 
-                          maxLength="1"
-                          value={num}
-                          onChange={(e) => updateNumber(rowIdx, digIdx, e.target.value)}
-                          className="w-11 h-11 bg-white border-2 border-gray-200 rounded-xl text-center text-xl font-black text-gray-900 focus:border-[#f42464] focus:ring-4 focus:ring-[#f42464]/5 outline-none transition-all placeholder:text-gray-100" 
-                          placeholder="0" 
-                        />
-                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-gray-300 opacity-0 group-focus-within/input:opacity-100 transition-opacity pointer-events-none">
-                           {['A','B','C','D'][digIdx]}
-                        </div>
-                     </div>
-                   ))}
-                </div>
-
-                <div className="flex items-center bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm h-11">
-                   <button onClick={() => updateQty(rowIdx, -1)} className="px-3 text-gray-300 hover:text-red-500 transition-colors"><Minus size={16} strokeWidth={3} /></button>
-                   <div className="w-8 text-center font-black text-sm text-gray-900 border-x border-gray-50">{row.qty}</div>
-                   <button onClick={() => updateQty(rowIdx, 1)} className="px-3 text-gray-300 hover:text-emerald-500 transition-colors"><Plus size={16} strokeWidth={3} /></button>
-                </div>
+          <div key={row.id} className="flex items-center justify-between gap-2">
+             <div className="flex gap-1 shrink-0">
+                {['A', 'B', 'C', 'D'].slice(0, digits).map(label => (
+                  <div key={label} className="w-8 h-8 bg-[#ff004d] rounded-full flex items-center justify-center text-white font-black text-[10px] shadow-md">{label}</div>
+                ))}
+             </div>
+             
+             <div className="flex gap-1 shrink-0">
+                {row.numbers.map((num, digIdx) => (
+                  <input 
+                    key={digIdx}
+                    id={`input-${title}-${rowIdx}-${digIdx}`}
+                    type="text" 
+                    value={num}
+                    onChange={(e) => updateNumber(rowIdx, digIdx, e.target.value)}
+                    className="w-8 h-8 border-[1.5px] border-gray-950 rounded-lg text-center text-lg font-black bg-white focus:border-[#ff004d] outline-none" 
+                    placeholder="-" 
+                    maxLength="1"
+                  />
+                ))}
              </div>
 
-             <button 
-               onClick={() => handleAdd(rowIdx)}
-               className="w-full bg-white border-2 border-dashed border-gray-200 text-gray-400 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:border-[#f42464] hover:text-[#f42464] hover:bg-[#fce4ec]/20 transition-all flex items-center justify-center gap-2 group/btn"
-             >
-                <Plus size={14} className="group-hover/btn:rotate-90 transition-transform" /> Add to checkout
-             </button>
+             <div className="flex items-center border-[1.5px] border-gray-700 rounded-lg overflow-hidden h-8 bg-gray-50">
+                <button onClick={() => updateQty(rowIdx, -1)} className="bg-gray-600 text-white px-2 font-black text-lg hover:bg-gray-700 active:bg-gray-800">-</button>
+                <div className="w-7 text-center font-black text-sm text-gray-900">{row.qty}</div>
+                <button onClick={() => updateQty(rowIdx, 1)} className="bg-gray-600 text-white px-2 font-black text-lg hover:bg-gray-700 active:bg-gray-800">+</button>
+             </div>
+
+             <div className="flex gap-1 shrink-0">
+                <button 
+                  onClick={() => handleAdd(rowIdx)}
+                  className="bg-[#ff004d] text-white px-3 py-2 rounded-lg font-black text-[10px] uppercase shadow-md active:scale-95"
+                >
+                  ADD
+                </button>
+             </div>
           </div>
         ))}
-      </div>
-
-      {/* Security Badge */}
-      <div className="mt-8 pt-4 border-t border-gray-100 flex items-center gap-2 opacity-30 justify-center">
-         <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-         <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest">End-to-End Encrypted Transaction</p>
       </div>
     </div>
   );
