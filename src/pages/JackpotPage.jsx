@@ -103,7 +103,7 @@ const JackpotPage = () => {
           />
         </div>
 
-        <div className="fixed bottom-0 w-full max-w-[480px] p-4 bg-white/50 backdrop-blur-sm z-50">
+        <div className="w-full max-w-[480px] p-4 bg-transparent z-50">
            <button 
              onClick={() => navigate('/cart')}
              className="w-full bg-[#ff0055] text-white py-4 rounded-xl flex items-center justify-center gap-2 font-black text-xl shadow-[0_8px_30px_rgba(255,0,85,0.4)] relative"

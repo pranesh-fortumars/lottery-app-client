@@ -117,7 +117,7 @@ const SelectionPage = () => {
           </div>
         )}
 
-        <div className="fixed bottom-0 w-full max-w-[480px] p-4 bg-white/50 backdrop-blur-sm z-50">
+        <div className="w-full max-w-[480px] p-4 bg-transparent z-50">
            <button 
              onClick={() => navigate('/cart')}
              disabled={closed}

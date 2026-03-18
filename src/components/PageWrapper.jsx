@@ -47,8 +47,8 @@ export const BottomNav = () => {
   const isAdmin = user?.role === 'admin';
 
   return (
-    <div className="fixed bottom-0 w-full max-w-[480px] z-[1000] shadow-[0_-4px_15px_rgba(0,0,0,0.15)] bg-white shrink-0">
-      <div className="bg-[#f42464] text-white py-2.5 text-center font-condensed font-black text-lg tracking-wide border-b border-white/10 uppercase">
+    <div className="w-full max-w-[480px] z-[1000] shadow-[0_-4px_15px_rgba(0,0,0,0.1)] rounded-t-3xl border-t border-[#f42464]/20 overflow-hidden mt-auto">
+      <div className="bg-[#f42464] text-white py-2 text-center font-condensed font-black text-sm tracking-wide border-b border-white/10 uppercase">
         {isAdmin ? 'DIAMOND ADMIN CONTROL' : "INDIA'S LARGEST PRIZES AGENCY"}
       </div>
       
@@ -91,14 +91,14 @@ export const BottomNav = () => {
 
 const PageWrapper = ({ children, title, showNav = true, showHeader = true }) => {
   return (
-    <div className="flex flex-col h-screen w-full bg-[#f9f9f9] overflow-hidden relative max-w-[480px] mx-auto shadow-2xl">
+    <div className="flex flex-col min-h-screen w-full bg-[#f9f9f9] relative max-w-[480px] mx-auto shadow-2xl overflow-x-hidden">
       {showHeader && <Header title={title} />}
       <motion.main 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className={`flex-grow overflow-y-auto ${showNav ? 'pb-[110px]' : ''} bg-[#f9f9f9]`}
+        className="flex-grow bg-[#f9f9f9]"
       >
         {children}
       </motion.main>
