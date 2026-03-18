@@ -12,6 +12,8 @@ import RulesPage from './pages/RulesPage';
 import ResultsPage from './pages/ResultsPage';
 import CartPage from './pages/CartPage';
 import ProfilePage from './pages/ProfilePage';
+import MyTickets from './pages/MyTickets';
+import TopUpPage from './pages/TopUpPage';
 
 import PageWrapper from './components/PageWrapper';
 import AdminLayout from './components/AdminLayout';
@@ -58,6 +60,8 @@ function App() {
 
           <Route path="/select/:gameId" element={<ProtectedRoute><SelectionPage /></ProtectedRoute>} />
           <Route path="/jackpot" element={<ProtectedRoute><JackpotPage /></ProtectedRoute>} />
+          <Route path="/tickets" element={<ProtectedRoute><MyTickets /></ProtectedRoute>} />
+          <Route path="/topup" element={<ProtectedRoute><TopUpPage /></ProtectedRoute>} />
           
           {/* Admin Routes */}
           <Route path="/admin" element={<ProtectedRoute role="admin"><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
