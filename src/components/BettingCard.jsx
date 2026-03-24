@@ -32,6 +32,45 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
     setRows(newRows);
   };
 
+  const getPermutations = (arr) => {
+    const results = [];
+    const permute = (current, remaining) => {
+      if (remaining.length === 0) {
+        results.push(current.join(''));
+        return;
+      }
+      for (let i = 0; i < remaining.length; i++) {
+        permute([...current, remaining[i]], [...remaining.slice(0, i), ...remaining.slice(i + 1)]);
+      }
+    };
+    permute([], arr);
+    return [...new Set(results)]; // Remove duplicates (e.g., if 112 is entered)
+  };
+
+  const handleBox = (rowIdx) => {
+    const row = rows[rowIdx];
+    if (row.numbers.some(n => n === '')) {
+      alert("Please enter all 3 numbers for BOX");
+      return;
+    }
+    
+    const permutations = getPermutations(row.numbers);
+    permutations.forEach(num => {
+      addToCart({
+        title: `${gameName} - ${title} (BOX) (Price: ${currentPrice})`,
+        num: num,
+        qty: row.qty,
+        price: parseFloat(currentPrice),
+        board: 'ABC'
+      });
+    });
+
+    const newRows = [...rows];
+    newRows[rowIdx].numbers = Array(digits).fill('');
+    setRows(newRows);
+    alert(`Added ${permutations.length} combinations to cart!`);
+  };
+
   const handleAdd = (rowIdx) => {
     const row = rows[rowIdx];
     if (row.numbers.some(n => n === '')) {
@@ -39,12 +78,18 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
       return;
     }
     
+    let boardLabel = '';
+    if (digits === 1) boardLabel = 'A';
+    else if (digits === 2) boardLabel = 'AB';
+    else if (digits === 3) boardLabel = 'ABC';
+    else if (digits === 4) boardLabel = 'DABC';
+
     addToCart({
       title: `${gameName} - ${title} (Price: ${currentPrice})`,
       num: row.numbers.join(''),
       qty: row.qty,
       price: parseFloat(currentPrice),
-      board: digits === 1 ? 'A' : digits === 2 ? 'AB' : digits === 3 ? 'ABC' : 'XABC'
+      board: boardLabel
     });
 
     const newRows = [...rows];
@@ -56,6 +101,15 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
     const newRows = [...rows];
     newRows[rowIdx].numbers = Array(digits).fill(0).map(() => Math.floor(Math.random() * 10).toString());
     setRows(newRows);
+  };
+
+  // Label logic based on user request:
+  // 3-digit: A, B, C
+  // 4-digit: D, A, B, C
+  const getLabel = (idx) => {
+    if (digits === 3) return ['A', 'B', 'C'][idx];
+    if (digits === 4) return ['D', 'A', 'B', 'C'][idx];
+    return ['A', 'B', 'C', 'D'][idx];
   };
 
   return (
@@ -97,12 +151,12 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
         </div>
       )}
 
-      <div className="space-y-5">
+      <div className="space-y-5 overflow-x-auto pb-2 scrollbar-hide">
         {rows.map((row, rowIdx) => (
-          <div key={row.id} className="flex items-center justify-between gap-2">
+          <div key={row.id} className="flex items-center justify-between gap-3 min-w-[340px]">
              <div className="flex gap-1 shrink-0">
-                {['A', 'B', 'C', 'D'].slice(0, digits).map(label => (
-                  <div key={label} className="w-8 h-8 bg-[#ff004d] rounded-full flex items-center justify-center text-white font-black text-[10px] shadow-md">{label}</div>
+                {row.numbers.map((_, i) => (
+                  <div key={i} className="w-7 h-7 bg-[#ff004d] rounded-full flex items-center justify-center text-white font-black text-[9px] shadow-sm">{getLabel(i)}</div>
                 ))}
              </div>
              
@@ -121,16 +175,24 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
                 ))}
              </div>
 
-             <div className="flex items-center border-[1.5px] border-gray-700 rounded-lg overflow-hidden h-8 bg-gray-50">
+             <div className="flex items-center border-[1.5px] border-gray-700 rounded-lg overflow-hidden h-8 bg-gray-50 shrink-0">
                 <button onClick={() => updateQty(rowIdx, -1)} className="bg-gray-600 text-white px-2 font-black text-lg hover:bg-gray-700 active:bg-gray-800">-</button>
-                <div className="w-7 text-center font-black text-sm text-gray-900">{row.qty}</div>
+                <div className="w-6 text-center font-black text-sm text-gray-900">{row.qty}</div>
                 <button onClick={() => updateQty(rowIdx, 1)} className="bg-gray-600 text-white px-2 font-black text-lg hover:bg-gray-700 active:bg-gray-800">+</button>
              </div>
 
              <div className="flex gap-1 shrink-0">
+                {digits === 3 && (
+                  <button 
+                    onClick={() => handleBox(rowIdx)}
+                    className="bg-gray-800 text-white px-2 py-2 rounded-lg font-black text-[9px] uppercase shadow-md active:scale-95 border-b-4 border-gray-950"
+                  >
+                    BOX
+                  </button>
+                )}
                 <button 
                   onClick={() => handleAdd(rowIdx)}
-                  className="bg-[#ff004d] text-white px-3 py-2 rounded-lg font-black text-[10px] uppercase shadow-md active:scale-95"
+                  className="bg-[#ff004d] text-white px-3 py-2 rounded-lg font-black text-[9px] uppercase shadow-md active:scale-95 border-b-4 border-gray-950"
                 >
                   ADD
                 </button>

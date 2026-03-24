@@ -1,5 +1,18 @@
 import React from 'react';
-import { User, LogOut, ChevronRight, History, Ticket, Landmark, Settings, Wallet, CreditCard } from 'lucide-react';
+import { 
+  User, 
+  LogOut, 
+  ChevronRight, 
+  History, 
+  Ticket, 
+  Settings, 
+  Wallet, 
+  CreditCard,
+  Users,
+  Gift,
+  Zap,
+  Copy
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import PageWrapper from '../components/PageWrapper';
 import { useAuth } from '../context/AuthContext';
@@ -14,6 +27,11 @@ const ProfilePage = () => {
     { icon: <History size={20} />, label: 'Transaction History', color: 'text-purple-500', path: '#' },
     { icon: <Settings size={20} />, label: 'Settings', color: 'text-gray-500', path: '#' },
   ];
+
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText('DIAMOND777');
+    alert('Referral code copied!');
+  };
 
   return (
     <PageWrapper title="MY PROFILE" showNav={true}>
@@ -54,8 +72,37 @@ const ProfilePage = () => {
            </div>
         </div>
 
+        {/* Referral Section - New Feature */}
+        <div className="p-6">
+           <div className="bg-gray-950 rounded-[2.5rem] p-8 text-white relative overflow-hidden group shadow-xl">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#ff0033]/20 rounded-full blur-3xl group-hover:bg-[#ff0033]/40 transition-colors"></div>
+              <div className="relative z-10">
+                 <div className="flex items-center gap-3 mb-4">
+                    <Gift className="text-[#ff0033]" size={24} />
+                    <h3 className="text-xl font-black font-condensed uppercase tracking-tighter italic italic">Refer & Get Chips</h3>
+                 </div>
+                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed mb-6">
+                    Invite your friends and both of you will receive <span className="text-white">BONUS CHIPS</span> to buy free tickets!
+                 </p>
+                 
+                 <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/10 group-hover:border-[#ff0033]/30 transition-all">
+                    <div className="flex-grow">
+                       <p className="text-[8px] font-black text-[#ff0033] uppercase tracking-widest mb-1">Your Referral Code</p>
+                       <p className="text-lg font-black tracking-tighter italic">DIAMOND777</p>
+                    </div>
+                    <button 
+                      onClick={handleCopyCode}
+                      className="bg-[#ff0033] p-3 rounded-xl text-white shadow-lg shadow-[#ff0033]/20 active:scale-95 transition-all"
+                    >
+                       <Copy size={18} />
+                    </button>
+                 </div>
+              </div>
+           </div>
+        </div>
+
         {/* Menu Items */}
-        <div className="p-4 py-12 space-y-4">
+        <div className="p-4 py-6 space-y-4">
           <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-2 mb-2 italic">Account Services</p>
           {menuItems.map((item, i) => (
             <div 
