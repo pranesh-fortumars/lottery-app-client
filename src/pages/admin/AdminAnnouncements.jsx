@@ -15,7 +15,11 @@ import {
   LayoutGrid,
   ListFilter,
   Plus,
-  Layers
+  Layers,
+  Search,
+  Activity,
+  Calendar,
+  DollarSign
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
@@ -23,6 +27,7 @@ const AdminAnnouncements = () => {
   const { purchasedTickets, addResult } = useCart();
   const [activeTab, setActiveTab] = useState('dispatch'); 
   const [selectedSlot, setSelectedSlot] = useState({ draw: '01:00 PM', brand: 'DEAR', type: '3D' });
+  const [searchQuery, setSearchQuery] = useState('');
   
   const [winPositions, setWinPositions] = useState([
     { position: '1st Prize', amount: '50000', winners: 1, number: '' },
@@ -32,28 +37,46 @@ const AdminAnnouncements = () => {
 
   const draws = ['01:00 PM', '03:00 PM', '06:00 PM', '08:00 PM', '10:30 AM (JP)', '01:30 PM (JP)'];
 
+  // --- Shared Intake Analytics for the Selected Slot ---
   const currentSlotAnalysis = useMemo(() => {
     const filtered = purchasedTickets.filter(t => t.title.includes(selectedSlot.draw));
     const combinationMap = {};
+    
     filtered.forEach(t => {
-      combinationMap[t.num] = (combinationMap[t.num] || 0) + 1;
+      combinationMap[t.num] = (combinationMap[t.num] || 0) + t.qty;
     });
 
-    const topCombinations = Object.entries(combinationMap)
-      .map(([num, count]) => ({
+    const allCombinations = Object.entries(combinationMap)
+      .map(([num, totalQty]) => ({
         num,
-        count,
-        risk: count > 50 ? 'High' : count > 20 ? 'Medium' : 'Low'
+        totalQty,
+        risk: totalQty > 100 ? 'High' : totalQty > 50 ? 'Medium' : 'Low'
       }))
-      .sort((a, b) => b.count - a.count);
+      .sort((a, b) => b.totalQty - a.totalQty);
+
+    const filteredCombinations = searchQuery 
+      ? allCombinations.filter(c => c.num.includes(searchQuery))
+      : allCombinations;
 
     return {
-      totalTickets: filtered.length,
-      uniqueCombinations: topCombinations.length,
-      topCombinations: topCombinations.slice(0, 10),
+      totalTickets: filtered.reduce((sum, t) => sum + t.qty, 0),
+      totalValue: filtered.reduce((sum, t) => sum + (t.qty * t.price), 0),
+      uniqueCombinations: allCombinations.length,
+      topCombinations: filteredCombinations.slice(0, 20),
       rawTickets: filtered
     };
-  }, [purchasedTickets, selectedSlot]);
+  }, [purchasedTickets, selectedSlot, searchQuery]);
+
+  // --- Market Summary (All Slots) ---
+  const marketSummary = useMemo(() => {
+    const summaryMap = {};
+    draws.forEach(d => {
+      const tickets = purchasedTickets.filter(t => t.title.includes(d));
+      const totalQty = tickets.reduce((sum, t) => sum + t.qty, 0);
+      summaryMap[d] = { totalQty };
+    });
+    return summaryMap;
+  }, [purchasedTickets]);
 
   const handleAddPosition = () => {
     setWinPositions([...winPositions, { position: `Prize ${winPositions.length + 1}`, amount: '0', winners: 0, number: '' }]);
@@ -99,12 +122,12 @@ const AdminAnnouncements = () => {
   };
 
   return (
-    <div className="space-y-8 p-4 pb-24">
+    <div className="space-y-8 p-4 pb-24 h-full overflow-y-auto scrollbar-hide">
       {/* Header Tabs */}
-      <div className="flex bg-white rounded-2xl p-2 shadow-lg border border-gray-100 mb-4">
+      <div className="flex bg-white rounded-2xl p-2 shadow-lg border border-gray-100 mb-4 sticky top-0 z-[100]">
         {[
-          { id: 'dispatch', label: 'Result Dispatch', icon: Zap },
-          { id: 'analysis', label: 'Slot Intelligence', icon: TrendingUp },
+          { id: 'dispatch', label: 'Dispatch', icon: Zap },
+          { id: 'analysis', label: 'Analytics', icon: TrendingUp },
         ].map(tab => (
           <button 
             key={tab.id}
@@ -121,12 +144,24 @@ const AdminAnnouncements = () => {
       {activeTab === 'dispatch' && (
         <div className="space-y-6">
           <div className="border-[1.5px] border-[#ff004d] rounded-[2.5rem] p-8 bg-white shadow-2xl relative overflow-hidden group">
-            <div className="flex gap-4 mb-10 border-b border-gray-100 pb-6">
+            <div className="flex gap-4 mb-4 border-b border-gray-100 pb-6">
               <img src="https://img.icons8.com/color/64/000000/treasure-chest.png" alt="Chest" className="w-16 h-16 drop-shadow-xl" />
               <div className="flex-grow">
                 <h2 className="text-2xl font-black text-gray-900 font-condensed uppercase tracking-tighter italic leading-none">Market Dispatcher</h2>
                 <p className="text-[#ff004d] font-black text-[10px] uppercase tracking-widest leading-none mt-1">Official Prize Allocation</p>
               </div>
+            </div>
+
+            {/* Quick Stats Banner for the current slot */}
+            <div className="flex gap-3 mb-10 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="bg-gray-900 text-white px-4 py-3 rounded-xl flex items-center gap-2 shrink-0">
+                    <Activity size={14} className="text-red-500" />
+                    <span className="text-[10px] font-black uppercase tracking-tight italic">Total Qty: {currentSlotAnalysis.totalTickets}</span>
+                </div>
+                <div className="bg-gray-50 border border-gray-100 px-4 py-3 rounded-xl flex items-center gap-2 shrink-0">
+                    <DollarSign size={14} className="text-green-600" />
+                    <span className="text-[10px] font-black uppercase tracking-tight text-gray-500">Intake: ₹ {currentSlotAnalysis.totalValue.toLocaleString()}</span>
+                </div>
             </div>
 
             <div className="space-y-8">
@@ -136,7 +171,7 @@ const AdminAnnouncements = () => {
                   <select 
                     value={selectedSlot.draw}
                     onChange={(e) => setSelectedSlot({...selectedSlot, draw: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 h-14 font-bold text-gray-700 outline-none focus:border-[#ff004d]/30 text-xs shadow-inner"
+                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 h-14 font-bold text-gray-700 outline-none focus:border-[#ff004d]"
                   >
                     {draws.map(d => <option key={d} value={d}>{d}</option>)}
                   </select>
@@ -146,7 +181,7 @@ const AdminAnnouncements = () => {
                   <select 
                     value={selectedSlot.brand}
                     onChange={(e) => setSelectedSlot({...selectedSlot, brand: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 h-14 font-bold text-gray-700 outline-none focus:border-[#ff004d]/30 text-xs shadow-inner"
+                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 h-14 font-bold text-gray-700 outline-none focus:border-[#ff004d]"
                   >
                     <option value="DEAR">DEAR LOTTERY</option>
                     <option value="KERALA">KERALA STATE</option>
@@ -158,10 +193,10 @@ const AdminAnnouncements = () => {
                   <select 
                     value={selectedSlot.type}
                     onChange={(e) => setSelectedSlot({...selectedSlot, type: e.target.value})}
-                    className="w-full bg-pink-50 border border-pink-100 rounded-xl px-4 h-14 font-black text-[#ff004d] outline-none focus:border-[#ff004d]/30 text-xs shadow-inner"
+                    className="w-full bg-pink-50 border border-pink-100 rounded-xl px-4 h-14 font-black text-[#ff004d] outline-none focus:border-[#ff004d]"
                   >
                     <option value="1D">1D (SINGLE)</option>
-                    <option value="2D (DOUBLE)">2D (DOUBLE)</option>
+                    <option value="2D">2D (DOUBLE)</option>
                     <option value="3D">3D (TRIPLE)</option>
                     <option value="4D">4D (XABC)</option>
                   </select>
@@ -239,7 +274,7 @@ const AdminAnnouncements = () => {
                 onClick={handleDeclareResult}
                 className="w-full h-16 bg-[#ff004d] text-white py-4 rounded-2xl font-black text-[12px] uppercase tracking-widest shadow-xl shadow-[#ff004d]/20 active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 border-b-4 border-black/20"
               >
-                Sync & Declare Winners <Trophy size={20} />
+                Sync & Declare Result <Trophy size={20} />
               </button>
             </div>
           </div>
@@ -248,72 +283,114 @@ const AdminAnnouncements = () => {
 
       {activeTab === 'analysis' && (
         <div className="space-y-6">
+          {/* Market Overview Grid */}
+          <div className="bg-white rounded-[2.5rem] p-8 shadow-xl border border-gray-100 overflow-hidden relative">
+             <div className="flex items-center justify-between border-b border-gray-50 pb-6 mb-8">
+                <div className="flex items-center gap-3">
+                   <Activity size={24} className="text-red-500" />
+                   <h3 className="font-condensed font-black text-xl italic uppercase tracking-tighter">Market Pulse</h3>
+                </div>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select to Analyze</p>
+             </div>
+             
+             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {draws.map(d => (
+                  <button 
+                    key={d}
+                    onClick={() => setSelectedSlot({...selectedSlot, draw: d})}
+                    className={`group relative p-6 rounded-[2rem] border transition-all duration-300 text-left overflow-hidden ${
+                      selectedSlot.draw === d 
+                        ? 'bg-gray-950 border-gray-950 text-white shadow-2xl scale-105' 
+                        : 'bg-gray-50 border-gray-100 text-gray-800'
+                    }`}
+                  >
+                     <p className={`text-[10px] font-black uppercase tracking-[.2em] mb-4 ${selectedSlot.draw === d ? 'text-red-500' : 'text-gray-400'}`}>{d}</p>
+                     <div className="flex justify-between items-end">
+                        <div>
+                           <p className="text-2xl font-black font-condensed tracking-tighter italic leading-none">{marketSummary[d].totalQty}</p>
+                           <p className="text-[8px] font-black uppercase opacity-60 mt-1">Total Quantity</p>
+                        </div>
+                        <ChevronRight size={18} className={`transition-transform duration-300 ${selectedSlot.draw === d ? 'translate-x-1 text-red-500' : 'text-gray-300'}`} />
+                     </div>
+                  </button>
+                ))}
+             </div>
+          </div>
+
           <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-xl space-y-8">
-            <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
-              <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-500 shadow-sm border border-amber-100">
-                <TrendingUp size={28} />
+            <div className="flex items-center gap-4 border-b border-gray-50 pb-6 opacity-80">
+              <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500 shadow-sm border border-amber-100">
+                <TrendingUp size={24} />
               </div>
               <div className="flex-grow">
-                <h3 className="text-xl font-black text-gray-900 font-condensed uppercase tracking-tighter italic leading-none">{selectedSlot.draw} Analytics</h3>
-                <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mt-1">Intake distribution summary</p>
+                <h3 className="text-lg font-black text-gray-900 font-condensed uppercase tracking-tighter italic leading-none">{selectedSlot.draw} DETAIL</h3>
+                <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none mt-1">Slot-specific intake Audit</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100 relative overflow-hidden group">
-                 <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Intake</p>
-                 <p className="text-2xl font-black text-gray-900 italic tracking-tighter leading-none">{currentSlotAnalysis.totalTickets}</p>
+              <div className="bg-gray-800 p-6 rounded-[2rem] text-white shadow-xl relative overflow-hidden group">
+                 <p className="text-[8px] font-black text-red-400 uppercase tracking-widest mb-1">Total Quantity</p>
+                 <p className="text-3xl font-black italic tracking-tighter leading-none">{currentSlotAnalysis.totalTickets}</p>
+                 <Activity className="absolute -bottom-2 -right-2 text-white/5" size={80} />
               </div>
               <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100 relative overflow-hidden group">
-                 <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Unique Codes</p>
-                 <p className="text-2xl font-black text-gray-900 italic tracking-tighter leading-none">{currentSlotAnalysis.uniqueCombinations}</p>
+                 <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Revenue</p>
+                 <p className="text-xl font-black text-gray-900 italic tracking-tighter leading-none">₹ {currentSlotAnalysis.totalValue.toLocaleString()}</p>
               </div>
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between ml-2">
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-[#ff004d]">Most Purchased</h4>
+              <div className="flex flex-col gap-3">
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-[#ff004d] ml-2 flex items-center gap-2">
+                  <Search size={12} /> Live Combination Lookup
+                </h4>
+                <div className="relative">
+                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
+                   <input 
+                     type="text" 
+                     placeholder="Search numbers..." 
+                     className="w-full h-14 bg-gray-50 border border-gray-100 rounded-2xl pl-12 pr-4 outline-none font-black text-gray-800 focus:border-[#ff004d]/20 shadow-inner"
+                     value={searchQuery}
+                     onChange={(e) => setSearchQuery(e.target.value)}
+                   />
+                </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {currentSlotAnalysis.topCombinations.length === 0 ? (
-                  <p className="text-center py-10 text-[10px] font-black text-gray-300 uppercase italic">No activity for this slot</p>
+                  <div className="flex flex-col items-center py-10 opacity-20">
+                    <Search size={48} />
+                    <p className="text-[10px] font-black uppercase tracking-widest mt-4">No activity</p>
+                  </div>
                 ) : (
                   currentSlotAnalysis.topCombinations.map((item, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                    <div key={idx} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-[1.5rem] shadow-sm hover:border-[#ff004d]/20 transition-all group">
                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 bg-gray-900 text-white rounded-xl flex items-center justify-center font-black text-xs italic border-b-2 border-red-600">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg italic border-b-4 ${
+                            item.risk === 'High' ? 'bg-red-50 text-red-600 border-red-600' :
+                            item.risk === 'Medium' ? 'bg-orange-50 text-orange-600 border-orange-600' :
+                            'bg-gray-900 text-white border-gray-100'
+                          }`}>
                              {item.num}
                           </div>
                           <div>
-                             <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Buy Count</p>
-                             <p className="text-sm font-black text-gray-800">{item.count} Tickets</p>
+                             <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Quantity Sold</p>
+                             <p className="text-lg font-black text-gray-800 leading-none">{item.totalQty}</p>
                           </div>
+                       </div>
+                       <div className="text-right">
+                          <p className={`text-[8px] font-black uppercase px-2 py-1 rounded-full ${
+                             item.risk === 'High' ? 'bg-red-100 text-red-600' :
+                             item.risk === 'Medium' ? 'bg-orange-100 text-orange-600' :
+                             'bg-green-100 text-green-600'
+                          }`}>
+                            {item.risk} Risk
+                          </p>
                        </div>
                     </div>
                   ))
                 )}
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-gray-50">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-4 ml-2">Recent Order Feed</h4>
-              <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
-                {currentSlotAnalysis.rawTickets.map((t, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-50">
-                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-white border border-gray-100 rounded-lg flex items-center justify-center shadow-sm"><Ticket size={14} className="text-gray-200" /></div>
-                        <div>
-                           <p className="text-[9px] font-black text-gray-800 leading-none italic">{t.purchaseId}</p>
-                           <p className="text-[7px] font-bold text-gray-400 uppercase mt-1">{t.purchaseTime.split(',')[1]}</p>
-                        </div>
-                     </div>
-                     <div className="text-right">
-                        <p className="text-[9px] font-black text-[#ff004d] leading-none mb-0.5">{t.num}</p>
-                        <p className="text-[7px] font-bold text-gray-400 uppercase">Qty: {t.qty}</p>
-                     </div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
