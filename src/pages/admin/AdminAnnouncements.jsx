@@ -14,14 +14,15 @@ import {
   Zap,
   LayoutGrid,
   ListFilter,
-  Plus
+  Plus,
+  Layers
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
 const AdminAnnouncements = () => {
   const { purchasedTickets, addResult } = useCart();
   const [activeTab, setActiveTab] = useState('dispatch'); 
-  const [selectedSlot, setSelectedSlot] = useState({ draw: '01:00 PM', brand: 'DEAR' });
+  const [selectedSlot, setSelectedSlot] = useState({ draw: '01:00 PM', brand: 'DEAR', type: '3D' });
   
   const [winPositions, setWinPositions] = useState([
     { position: '1st Prize', amount: '50000', winners: 1, number: '' },
@@ -69,10 +70,17 @@ const AdminAnnouncements = () => {
       return alert("Please enter winning numbers for all prize positions");
     }
     
+    // Check if numbers match the lottery type
+    const expectedLen = parseInt(selectedSlot.type.charAt(0));
+    if (winPositions.some(p => p.number.length !== expectedLen)) {
+       return alert(`All winning numbers must be exactly ${expectedLen} digits for ${selectedSlot.type} lottery.`);
+    }
+
     // Prepare result data for the global context
     const resultData = {
       draw: selectedSlot.draw,
       brand: selectedSlot.brand,
+      type: selectedSlot.type,
       winPositions: winPositions.map(p => ({
         position: p.position,
         number: p.number,
@@ -86,7 +94,7 @@ const AdminAnnouncements = () => {
     // Reset winning numbers only, keep configuration
     setWinPositions(winPositions.map(p => ({ ...p, number: '' })));
     
-    alert("Results Declared Successfully! Winners have been allocated prizes and wallets refreshed.");
+    alert(`Results Declared for ${selectedSlot.type} Successfully! Winners have been allocated prizes.`);
     setActiveTab('analysis'); 
   };
 
@@ -122,27 +130,40 @@ const AdminAnnouncements = () => {
             </div>
 
             <div className="space-y-8">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Draw Event</label>
                   <select 
                     value={selectedSlot.draw}
                     onChange={(e) => setSelectedSlot({...selectedSlot, draw: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 h-14 font-bold text-gray-700 outline-none focus:border-[#ff004d]/30 text-xs"
+                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 h-14 font-bold text-gray-700 outline-none focus:border-[#ff004d]/30 text-xs shadow-inner"
                   >
                     {draws.map(d => <option key={d} value={d}>{d}</option>)}
                   </select>
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Category</label>
+                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Market</label>
                   <select 
                     value={selectedSlot.brand}
                     onChange={(e) => setSelectedSlot({...selectedSlot, brand: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 h-14 font-bold text-gray-700 outline-none focus:border-[#ff004d]/30 text-xs"
+                    className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 h-14 font-bold text-gray-700 outline-none focus:border-[#ff004d]/30 text-xs shadow-inner"
                   >
                     <option value="DEAR">DEAR LOTTERY</option>
                     <option value="KERALA">KERALA STATE</option>
                     <option value="JACKPOT">DIAMOND JP</option>
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black text-pink-600 uppercase tracking-widest ml-1 flex items-center gap-1"><Layers size={10} /> Lottery Type</label>
+                  <select 
+                    value={selectedSlot.type}
+                    onChange={(e) => setSelectedSlot({...selectedSlot, type: e.target.value})}
+                    className="w-full bg-pink-50 border border-pink-100 rounded-xl px-4 h-14 font-black text-[#ff004d] outline-none focus:border-[#ff004d]/30 text-xs shadow-inner"
+                  >
+                    <option value="1D">1D (SINGLE)</option>
+                    <option value="2D (DOUBLE)">2D (DOUBLE)</option>
+                    <option value="3D">3D (TRIPLE)</option>
+                    <option value="4D">4D (XABC)</option>
                   </select>
                 </div>
               </div>
@@ -179,7 +200,8 @@ const AdminAnnouncements = () => {
                                <Sparkles className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-500 opacity-50" size={14} />
                                <input 
                                  type="text" 
-                                 placeholder="WINNING NO." 
+                                 placeholder={`${selectedSlot.type} NO.`} 
+                                 maxLength={parseInt(selectedSlot.type.charAt(0)) || 1}
                                  className="w-full h-12 bg-white border border-gray-100 rounded-xl pl-10 pr-4 outline-none font-black text-gray-800 text-sm focus:border-amber-500/30 shadow-inner"
                                  value={pos.number}
                                  onChange={(e) => handleUpdatePosition(i, 'number', e.target.value)}

@@ -26,10 +26,18 @@ export const CartProvider = ({ children }) => {
     return savedTickets ? JSON.parse(savedTickets) : [];
   });
 
-  // --- Declared Results (1st, 2nd, 3rd Positions) ---
+  // --- Declared Results ---
   const [declaredResults, setDeclaredResults] = useState(() => {
     const savedResults = localStorage.getItem('diamond_results');
     return savedResults ? JSON.parse(savedResults) : [];
+  });
+
+  // --- Notifications ---
+  const [notifications, setNotifications] = useState(() => {
+    const savedNotifs = localStorage.getItem('diamond_notifications');
+    return savedNotifs ? JSON.parse(savedNotifs) : [
+      { id: 1, title: 'Welcome to Diamond!', message: 'Start your lottery journey today.', time: 'Just now', read: false, type: 'info' }
+    ];
   });
 
   useEffect(() => {
@@ -43,6 +51,10 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('diamond_results', JSON.stringify(declaredResults));
   }, [declaredResults]);
+
+  useEffect(() => {
+    localStorage.setItem('diamond_notifications', JSON.stringify(notifications));
+  }, [notifications]);
 
   const addToCart = (entry) => {
     setCart((prev) => [...prev, { ...entry, id: Date.now() }]);
@@ -68,11 +80,28 @@ export const CartProvider = ({ children }) => {
     }));
     setPurchasedTickets((prev) => [...newPurchases, ...prev]);
     clearCart();
+    addNotification({
+       title: 'Tickets Confirmed!',
+       message: `Your purchase of ${cart.length} tickets is successful.`,
+       type: 'success'
+    });
+  };
+
+  const addNotification = (notif) => {
+    const newNotif = {
+      ...notif,
+      id: Date.now(),
+      time: 'Just now',
+      read: false
+    };
+    setNotifications(prev => [newNotif, ...prev]);
+  };
+
+  const markAllRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
 
   const addResult = (resultData) => {
-    // resultData: { draw, brand, winners: [], prizes: [] }
-    // winners: [{ title: '1st Prize', number: '1234', amount: '50000' }, ...]
     const newResultEntry = {
       ...resultData,
       id: Date.now(),
@@ -82,20 +111,28 @@ export const CartProvider = ({ children }) => {
     
     setDeclaredResults((prev) => [newResultEntry, ...prev]);
 
-    // --- Winner Processing Logic ---
+    // Send a global notification for the draw result
+    addNotification({
+      title: `${resultData.brand} Result Declared!`,
+      message: `The results for the ${resultData.draw} draw are out. Winning Number: ${resultData.number}`,
+      type: 'result'
+    });
+
+    // --- Winner Processing ---
+    let userWon = false;
+    let totalPrize = 0;
+
     const updatedTickets = purchasedTickets.map(ticket => {
-      // Find matches for the current brand and draw time
       if (!ticket.title.includes(resultData.draw)) return ticket;
 
-      // Find if ticket number matches any winning position
       const winningPosition = resultData.winPositions.find(pos => pos.number === ticket.num);
       
       if (winningPosition) {
         const prizeAmount = parseFloat(winningPosition.amount) * ticket.qty;
         
-        // Add prize to user's virtual balance if it's their ticket
-        // (In a real app, we'd check user identity here, but we'll assume current user)
         if (ticket.status !== 'Won' && user?.role === 'user') {
+          userWon = true;
+          totalPrize += prizeAmount;
           updateBalance(prizeAmount);
         }
 
@@ -108,6 +145,14 @@ export const CartProvider = ({ children }) => {
       
       return ticket;
     });
+
+    if (userWon) {
+      addNotification({
+        title: '🎉 You Won!',
+        message: `Congratulations! Your ticket matched a winning number. ₹ ${totalPrize.toLocaleString()} added to your wallet.`,
+        type: 'win'
+      });
+    }
 
     setPurchasedTickets(updatedTickets);
   };
@@ -124,7 +169,10 @@ export const CartProvider = ({ children }) => {
       cartTotal,
       purchasedTickets,
       declaredResults,
-      addResult
+      addResult,
+      notifications,
+      markAllRead,
+      addNotification
     }}>
       {children}
     </CartContext.Provider>
