@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageWrapper from '../components/PageWrapper';
-import { ScrollText, Gavel, ShoppingCart } from 'lucide-react';
+import { ScrollText, Gavel, ShoppingCart, Sparkles } from 'lucide-react';
 import BettingCard from '../components/BettingCard';
 import { useCart } from '../context/CartContext';
 
 const JackpotPage = () => {
   const navigate = useNavigate();
+  const { cart } = useCart();
   
   const isClosed = (slotTime) => {
     const now = new Date();
@@ -23,7 +24,6 @@ const JackpotPage = () => {
     const slotDate = new Date();
     slotDate.setHours(hours, minutes, 0, 0);
     
-    // Booking ends 15 mins before draw
     const diffInMinutes = (slotDate - now) / (1000 * 60);
     return diffInMinutes <= 15;
   };
@@ -42,7 +42,6 @@ const JackpotPage = () => {
     status: isClosed(s.time) ? 'closed' : 'active'
   }));
 
-  const { cart } = useCart();
   const firstActiveSlot = slots.find(s => s.status === 'active')?.time || slots[slots.length - 1].time;
   const [activeSlot, setActiveSlot] = useState(firstActiveSlot);
 
@@ -54,9 +53,25 @@ const JackpotPage = () => {
     { price: "60.00", win: "₹ 35000, 1000, 100" },
   ];
 
+  const jackpotFooter = (
+    <button 
+      onClick={() => navigate('/cart')}
+      className="w-full text-white py-4 rounded-2xl flex items-center justify-center gap-3 font-black text-xl shadow-[0_15px_30px_-5px_rgba(255,0,85,0.4)] relative active:scale-95 transition-all bg-[#ff0055]"
+    >
+      <ShoppingCart size={24} fill="white" /> PAY NOW
+      {cart.length > 0 && (
+         <span className="absolute -top-3 -right-3 bg-black text-white w-8 h-8 rounded-full text-[12px] flex items-center justify-center border-[3px] border-white font-black shadow-lg">{cart.length}</span>
+      )}
+    </button>
+  );
+
   return (
-    <PageWrapper title="DIAMOND JACKPOT LOTTERY" showNav={true}>
-      <div className="bg-[#f9f9f9] min-h-screen">
+    <PageWrapper 
+      title="DIAMOND JACKPOT LOTTERY" 
+      showNav={true}
+      footerAction={jackpotFooter}
+    >
+      <div className="bg-[#f9f9f9]">
         <div className="bg-[#fce4ec] py-3 px-4 shadow-sm border-b border-white/50 text-center mb-4">
            <p className="text-white bg-[#ff1c74] inline-block px-5 py-2 rounded-full text-[10px] font-black tracking-wide uppercase">
              Jackpot lot purchase open till 15 mins before draw
@@ -100,18 +115,6 @@ const JackpotPage = () => {
             gameName="Jackpot" 
             priceOptions={abcTiers}
           />
-        </div>
-
-        <div className="w-full max-w-[480px] p-4 bg-transparent z-50">
-           <button 
-             onClick={() => navigate('/cart')}
-             className="w-full bg-[#ff0055] text-white py-4 rounded-xl flex items-center justify-center gap-2 font-black text-xl shadow-xl relative"
-           >
-             <ShoppingCart size={24} /> Pay now
-             {cart.length > 0 && (
-               <span className="absolute -top-2 -right-2 bg-black text-white w-6 h-6 rounded-full text-[10px] flex items-center justify-center border-2 border-white">{cart.length}</span>
-             )}
-           </button>
         </div>
       </div>
     </PageWrapper>

@@ -63,16 +63,34 @@ const SelectionPage = () => {
     { price: "100.00", win: "₹ 500000, 10000, 1000, 100" },
   ];
 
+  // --- Persistent Footer Action ---
+  const footerBtn = (
+    <button 
+      onClick={() => navigate('/cart')}
+      disabled={closed}
+      className={`w-full text-white py-4 rounded-2xl flex items-center justify-center gap-3 font-black text-xl shadow-[0_15px_30px_-5px_rgba(255,0,85,0.4)] relative active:scale-95 transition-all ${closed ? 'bg-gray-400' : 'bg-[#ff0055]'}`}
+    >
+      <ShoppingCart size={24} fill="white" /> {closed ? 'Closed' : 'PAY NOW'}
+      {cart.length > 0 && !closed && (
+         <span className="absolute -top-3 -right-3 bg-black text-white w-8 h-8 rounded-full text-[12px] flex items-center justify-center border-[3px] border-white font-black shadow-lg">{cart.length}</span>
+      )}
+    </button>
+  );
+
   return (
-    <PageWrapper title={getGameName().toUpperCase()} showNav={true}>
-      <div className="bg-[#f9f9f9] min-h-screen">
+    <PageWrapper 
+      title={getGameName().toUpperCase()} 
+      showNav={true}
+      footerAction={footerBtn}
+    >
+      <div className="bg-[#f9f9f9]">
         <div className={`py-3 px-4 shadow-sm border-b border-white/50 text-center mb-4 ${closed ? 'bg-red-600' : 'bg-[#fce4ec]'}`}>
            <p className="text-white inline-block px-5 py-2 rounded-full text-[10px] font-black tracking-wide uppercase">
              {closed ? 'BOOKING CLOSED FOR THIS DRAW' : (isKerala ? 'Booking ends at 02:45 PM' : 'Booking ends 15 mins before draw')}
            </p>
         </div>
 
-        <div className={`p-4 pb-28 ${closed ? 'opacity-50 pointer-events-none' : ''}`}>
+        <div className={`p-4 ${closed ? 'opacity-50 pointer-events-none' : ''}`}>
           <div className="flex gap-4 mb-8">
              <button onClick={() => navigate('/rules')} className="flex-1 bg-[#ff004d] text-white py-3 rounded-xl flex items-center justify-center gap-2 font-black shadow-lg uppercase tracking-tight">
                 <Gavel size={20} /> Rules
@@ -121,19 +139,6 @@ const SelectionPage = () => {
               priceOptions={xabcTiers}
             />
           )}
-        </div>
-
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-[480px] p-4 bg-transparent z-50">
-           <button 
-             onClick={() => navigate('/cart')}
-             disabled={closed}
-             className={`w-full text-white py-4 rounded-xl flex items-center justify-center gap-2 font-black text-xl shadow-xl relative ${closed ? 'bg-gray-400' : 'bg-[#ff0055]'}`}
-           >
-             <ShoppingCart size={24} /> {closed ? 'Closed' : 'Pay now'}
-             {cart.length > 0 && !closed && (
-                <span className="absolute -top-2 -right-2 bg-black text-white w-7 h-7 rounded-full text-[12px] flex items-center justify-center border-2 border-white font-black animate-bounce">{cart.length}</span>
-             )}
-           </button>
         </div>
       </div>
     </PageWrapper>

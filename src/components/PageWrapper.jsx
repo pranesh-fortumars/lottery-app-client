@@ -71,7 +71,7 @@ export const BottomNav = () => {
   const links = isAdmin ? adminLinks : userLinks;
 
   return (
-    <div className="w-full max-w-[480px] z-[1000] shadow-[0_-8px_30px_rgba(255,0,51,0.2)] rounded-t-[2.5rem] bg-[#ff0033] overflow-hidden mt-auto">
+    <div className="w-full shadow-[0_-8px_30px_rgba(255,0,51,0.2)] rounded-t-[2.5rem] bg-[#ff0033] overflow-hidden">
       <div className="bg-black/10 text-white/80 py-2 text-center font-black text-[8px] tracking-[0.2em] border-b border-white/5 uppercase">
         {isAdmin ? '🛡️ Admin Command Center' : "💎 Diamond Agency Network"}
       </div>
@@ -101,20 +101,30 @@ export const BottomNav = () => {
   );
 };
 
-const PageWrapper = ({ children, title, showNav = true, showHeader = true }) => {
+const PageWrapper = ({ children, title, showNav = true, showHeader = true, footerAction = null }) => {
   return (
-    <div className="flex flex-col min-h-screen w-full bg-[#f9f9f9] relative max-w-[480px] mx-auto shadow-2xl overflow-x-hidden border-x border-gray-100">
+    <div className="flex flex-col h-screen w-full bg-[#f9f9f9] relative max-w-[480px] mx-auto shadow-2xl overflow-hidden border-x border-gray-100">
       {showHeader && <Header title={title} />}
+      
       <motion.main 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="flex-grow bg-[#f9f9f9]"
+        className="flex-grow bg-[#f9f9f9] overflow-y-auto scrollbar-hide pb-10"
       >
         {children}
       </motion.main>
-      {showNav && <BottomNav />}
+      
+      {/* Footer Area: Actions above BottomNav */}
+      <div className="shrink-0 w-full bg-transparent pointer-events-none z-50">
+         {footerAction && (
+           <div className="px-4 pb-4 pointer-events-auto">
+             {footerAction}
+           </div>
+         )}
+         {showNav && <BottomNav />}
+      </div>
     </div>
   );
 };
