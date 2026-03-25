@@ -40,7 +40,7 @@ export const Header = ({ title = "DIAMOND AGENCY" }) => {
             Logout
           </button>
         )}
-        <NavLink to="/profile" className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center hover:bg-white/20 transition-all border border-white/5">
+        <NavLink to="/profile" className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center hover:bg-white/20 transition-all border border-white/5 pointer-events-auto">
           <User size={22} strokeWidth={2.5} />
         </NavLink>
       </div>
@@ -71,7 +71,7 @@ export const BottomNav = () => {
   const links = isAdmin ? adminLinks : userLinks;
 
   return (
-    <div className="w-full shadow-[0_-8px_30px_rgba(255,0,51,0.2)] rounded-t-[2.5rem] bg-[#ff0033] overflow-hidden">
+    <div className="w-full shadow-[0_-8px_30px_rgba(255,0,51,0.2)] rounded-t-[2.5rem] bg-[#ff0033] overflow-hidden pointer-events-auto">
       <div className="bg-black/10 text-white/80 py-2 text-center font-black text-[8px] tracking-[0.2em] border-b border-white/5 uppercase">
         {isAdmin ? '🛡️ Admin Command Center' : "💎 Diamond Agency Network"}
       </div>
