@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 
-const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digits = 1, gameName = "Dear Lottery", priceOptions = [] }) => {
+const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digits = 1, gameName = "Dear Lottery", priceOptions = [], board = "" }) => {
   const { addToCart } = useCart();
   const [selectedTier, setSelectedTier] = useState(priceOptions.length > 0 ? priceOptions[0] : null);
   
@@ -61,7 +61,7 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
         num: num,
         qty: row.qty,
         price: parseFloat(currentPrice),
-        board: 'ABC',
+        board: board || 'ABC',
         playType: '3D'
       });
     });
@@ -79,18 +79,12 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
       return;
     }
     
-    let boardLabel = '';
-    if (digits === 1) boardLabel = 'A';
-    else if (digits === 2) boardLabel = 'AB';
-    else if (digits === 3) boardLabel = 'ABC';
-    else if (digits === 4) boardLabel = 'DABC';
-
     addToCart({
       title: `${gameName} - ${title} (Price: ${currentPrice})`,
       num: row.numbers.join(''),
       qty: row.qty,
       price: parseFloat(currentPrice),
-      board: boardLabel,
+      board: board || (digits === 1 ? 'A' : digits === 2 ? 'AB' : digits === 3 ? 'ABC' : 'DABC'),
       playType: `${digits}D`
     });
 
@@ -106,6 +100,11 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
   };
 
   const getLabel = (idx) => {
+    if (board) {
+      // Split board like "XABC" or "AB" into individual chars
+      const labels = board.split('');
+      return labels[idx] || '';
+    }
     if (digits === 3) return ['A', 'B', 'C'][idx];
     if (digits === 4) return ['D', 'A', 'B', 'C'][idx];
     return ['A', 'B', 'C', 'D'][idx];
@@ -155,7 +154,7 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
           <div key={row.id} className="flex items-center justify-between gap-3 min-w-[340px]">
              <div className="flex gap-1 shrink-0">
                 {row.numbers.map((_, i) => (
-                  <div key={i} className="w-7 h-7 bg-[#ff004d] rounded-full flex items-center justify-center text-white font-black text-[9px] shadow-sm">{getLabel(i)}</div>
+                  <div key={i} className="w-7 h-7 bg-[#ff004d] rounded-full flex items-center justify-center text-white font-black text-[9px] shadow-sm uppercase">{getLabel(i)}</div>
                 ))}
              </div>
              
