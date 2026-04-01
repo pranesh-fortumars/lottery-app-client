@@ -1,131 +1,112 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&family=Bebas+Neue&family=Roboto:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700;900&family=Inter:wght@400;600;700;900&family=Roboto+Condensed:ital,wght@0,400;0,700;0,900;1,900&display=swap');
 
 :root {
-  --color-brand-pink: #f42464;
   --color-brand-red: #ff0000;
-  --font-bebas: "Bebas Neue", cursive;
-  --font-roboto: "Roboto", sans-serif;
-  --primary-pink: #f42464;
-  --dark-red: #ff0000;
-  --nav-gradient: linear-gradient(180deg, #f42464 0%, #ff5c8a 100%);
+  --font-inter: "Inter", sans-serif;
+  --font-serif: "Crimson Pro", serif;
   --bg-body: #ffffff;
   --max-width: 480px;
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #f0f2f5;
+  font-family: var(--font-inter);
+  background-color: #f4f6f8;
   margin: 0;
   padding: 0;
+  color: #1a1a1a;
 }
 
 #root {
   max-width: var(--max-width);
   margin: 0 auto;
   min-height: 100vh;
-  background: #f9f9f9;
-  box-shadow: 0 0 40px rgba(0,0,0,0.15);
+  background: #ffffff;
+  box-shadow: 0 0 50px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
 }
 
+/* Global Typography Overrides */
+h1, h2, h3, h4 {
+  font-family: var(--font-inter);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
 .font-condensed {
-  font-family: 'Impact', 'Arial Narrow Bold', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
 }
 
-/* Custom Styles for Lottery UI */
+.font-serif-official {
+  font-family: var(--font-serif);
+}
+
+/* Premium Component Styling */
 .game-card-gradient {
-  background: linear-gradient(135deg, #001f3f 0%, #000c19 100%);
-}
-
-.slot-card {
-  border: 1px solid #ff0000;
-  border-radius: 8px;
-  padding: 8px;
-  width: 30%;
-  text-align: center;
-  transition: all 0.2s ease;
-}
-
-.slot-time {
-  font-weight: 800;
-  font-size: 0.8rem;
-  color: #ff0000;
-}
-
-.slot-label {
-  font-size: 0.6rem;
-  font-weight: 700;
-  color: #666;
-  text-transform: uppercase;
-}
-
-.jackpot-card {
-  border: 2px solid #f42464;
-  border-radius: 12px;
-  padding: 12px;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.jackpot-board-circle {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background-color: #f42464;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 0.75rem;
-}
-
-.jackpot-input {
-  width: 45px;
-  height: 40px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  text-align: center;
-  font-size: 1.2rem;
-  font-weight: 900;
-  outline: none;
-  background: #fdfdfd;
-}
-
-.jackpot-qty-control {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.jackpot-btn-red {
-  background-color: #f42464;
-  color: white;
-  font-weight: 900;
-  padding: 6px 15px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  transition: active 0.1s;
-}
-
-.jackpot-btn-red:active {
-  transform: scale(0.95);
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 }
 
 .btn-primary-red {
-    background-color: #f42464;
+    background-color: var(--color-brand-red);
     color: white;
-    font-weight: bold;
-    border-radius: 8px;
+    font-weight: 900;
+    border-radius: 12px;
+    padding: 12px 20px;
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+    transition: all 0.2s;
+}
+
+.btn-primary-red:active {
+    transform: scale(0.96);
+}
+
+/* ---------------------------------------------------------
+   OFFICIAL RESULT TABLE STYLES (Matching Reference Image)
+   --------------------------------------------------------- */
+.official-result-card {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.official-result-card table {
+    width: 100%;
+    border: 1.5px solid #ff0000;
+}
+
+.official-result-card td {
     padding: 10px 15px;
-    box-shadow: 0 4px 6px rgba(244, 36, 100, 0.2);
+    border: 1px solid #ff0000;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.official-result-card td:first-child {
+    width: 35%;
+}
+
+.result-circle {
+    display: inline-flex;
+    width: 28px;
+    height: 28px;
+    background-color: #ff0000;
+    color: #ffffff;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.9rem;
+    margin-right: 8px;
+    font-family: var(--font-inter);
+}
+
+.result-list-container {
+    padding: 20px;
+    background: #ffffff;
 }
