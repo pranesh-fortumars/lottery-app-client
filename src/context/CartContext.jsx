@@ -102,44 +102,88 @@ export const CartProvider = ({ children }) => {
   };
 
   const addResult = (resultData) => {
+    // resultData structure: { draw, brand, digits: {X,A,B,C}, prizes: {...} }
+    const { digits, prizes } = resultData;
+    const fullNum = `${digits.X}${digits.A}${digits.B}${digits.C}`;
+    
     const newResultEntry = {
       ...resultData,
       id: Date.now(),
       date: new Date().toLocaleDateString(),
-      status: 'Active'
+      status: 'Active',
+      number: fullNum // For display
     };
     
     setDeclaredResults((prev) => [newResultEntry, ...prev]);
 
-    // Send a global notification for the draw result
+    // Global notification
     addNotification({
       title: `${resultData.brand} Result Declared!`,
-      message: `The results for the ${resultData.draw} draw are out. Winning Number: ${resultData.number}`,
+      message: `The results for ${resultData.draw} are out. Winning Number: ${fullNum}`,
       type: 'result'
     });
 
-    // --- Winner Processing ---
+    // --- Complex Winner Processing based on 1D/2D/3D/4D ---
     let userWon = false;
-    let totalPrize = 0;
+    let totalWinAmount = 0;
 
     const updatedTickets = purchasedTickets.map(ticket => {
+      // Check draw time and market (if applicable)
       if (!ticket.title.includes(resultData.draw)) return ticket;
+      if (ticket.status === 'Won') return ticket; // Skip already processed
 
-      const winningPosition = resultData.winPositions.find(pos => pos.number === ticket.num);
-      
-      if (winningPosition) {
-        const prizeAmount = parseFloat(winningPosition.amount) * ticket.qty;
-        
-        if (ticket.status !== 'Won' && user?.role === 'user') {
-          userWon = true;
-          totalPrize += prizeAmount;
-          updateBalance(prizeAmount);
-        }
+      let isWinner = false;
+      let wonPrize = 0;
+
+      // Extract specific combinations from the declared 4 digits
+      const combinations = {
+        '1D_A': digits.A,
+        '1D_B': digits.B,
+        '1D_C': digits.C,
+        '2D_AB': `${digits.A}${digits.B}`,
+        '2D_BC': `${digits.B}${digits.C}`,
+        '2D_AC': `${digits.A}${digits.C}`,
+        '3D_ABC': `${digits.A}${digits.B}${digits.C}`,
+        '4D_XABC': `${digits.X}${digits.A}${digits.B}${digits.C}`
+      };
+
+      // Ticket Type Logic
+      const tNum = ticket.num.toString();
+      const tType = ticket.type; // Assuming ticket has 'type' ('1D', '2D', etc)
+      const tPos = ticket.pos;   // Assuming ticket has 'pos' ('A', 'AB', etc)
+
+      if (tType === '1D') {
+         if (tNum === combinations[`1D_${tPos}`]) {
+            isWinner = true;
+            wonPrize = parseFloat(prizes['1D'][tPos]);
+         }
+      } else if (tType === '2D (DOUBLE)') {
+         if (tNum === combinations[`2D_${tPos}`]) {
+            isWinner = true;
+            wonPrize = parseFloat(prizes['2D'][tPos]);
+         }
+      } else if (tType === '3D') {
+         if (tNum === combinations['3D_ABC']) {
+            isWinner = true;
+            wonPrize = parseFloat(prizes['3D'].ABC);
+         }
+      } else if (tType === '4D') {
+         if (tNum === combinations['4D_XABC']) {
+            isWinner = true;
+            wonPrize = parseFloat(prizes['4D'].XABC);
+         }
+      }
+
+      if (isWinner) {
+        const totalAward = wonPrize * ticket.qty;
+        userWon = true;
+        totalWinAmount += totalAward;
+        updateBalance(totalAward);
 
         return {
           ...ticket,
           status: 'Won',
-          prize: `₹ ${prizeAmount.toLocaleString()}`
+          prize: `₹ ${totalAward.toLocaleString()}`
         };
       }
       
@@ -148,8 +192,8 @@ export const CartProvider = ({ children }) => {
 
     if (userWon) {
       addNotification({
-        title: '🎉 You Won!',
-        message: `Congratulations! Your ticket matched a winning number. ₹ ${totalPrize.toLocaleString()} added to your wallet.`,
+        title: '🎉 JACKPOT WINNER!',
+        message: `Congratulations! Your ticket matched the combination. ₹ ${totalWinAmount.toLocaleString()} added to your wallet.`,
         type: 'win'
       });
     }

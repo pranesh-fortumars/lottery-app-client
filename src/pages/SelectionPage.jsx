@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PageWrapper from '../components/PageWrapper';
-import { ScrollText, Gavel, ShoppingCart, Lock } from 'lucide-react';
+import { ScrollText, Gavel, ShoppingCart, Lock, Info } from 'lucide-react';
 import BettingCard from '../components/BettingCard';
 import { useCart } from '../context/CartContext';
 
@@ -10,9 +10,6 @@ const SelectionPage = () => {
   const { gameId } = useParams();
   const { cart } = useCart();
   
-  const isKerala = gameId === '4';
-  const getGameName = () => isKerala ? 'Kerala Lottery' : 'Dear Lottery';
-  
   const gameTimes = {
     '1': '01:00 PM',
     '2': '06:00 PM',
@@ -20,10 +17,16 @@ const SelectionPage = () => {
     '4': '03:00 PM'
   };
 
-  const isClosed = (drawTime) => {
-    if (!drawTime) return false;
+  const drawTime = gameTimes[gameId];
+  const isKerala = gameId === '4'; 
+  const marketName = isKerala ? 'KERALA' : 'DEAR';
+  
+  const getGameName = () => `${marketName} LOTTERY`;
+  
+  const isClosed = (timeStr) => {
+    if (!timeStr) return false;
     const now = new Date();
-    const parts = drawTime.match(/(\d+)[.:](\d+)\s*(AM|PM)/);
+    const parts = timeStr.match(/(\d+)[.:](\d+)\s*(AM|PM)/);
     if (!parts) return true;
     
     let hours = parseInt(parts[1]);
@@ -37,10 +40,10 @@ const SelectionPage = () => {
     drawDate.setHours(hours, minutes, 0, 0);
     
     const diffInMinutes = (drawDate - now) / (1000 * 60);
-    return diffInMinutes <= 15;
+    return diffInMinutes <= 0; // Exactly at draw time
   };
 
-  const closed = isClosed(gameTimes[gameId]);
+  const closed = isClosed(drawTime);
 
   const abcTiers = [
     { price: "12.00", win: "₹ 6250, 250, 25" },
@@ -49,13 +52,6 @@ const SelectionPage = () => {
     { price: "55.00", win: "₹ 30000, 1000, 100" },
     { price: "60.00", win: "₹ 35000, 1000, 100" },
   ];
-
-  if (isKerala) {
-    abcTiers.push(
-      { price: "33.00", win: "₹ 20000, 500, 50" },
-      { price: "65.00", win: "₹ 40000, 1000, 100" }
-    );
-  }
 
   const xabcTiers = [
     { price: "20.00", win: "₹ 100000" },
@@ -79,65 +75,84 @@ const SelectionPage = () => {
 
   return (
     <PageWrapper 
-      title={getGameName().toUpperCase()} 
+      title={getGameName()} 
       showNav={true}
       footerAction={footerBtn}
     >
       <div className="bg-[#f9f9f9]">
-        <div className={`py-3 px-4 shadow-sm border-b border-white/50 text-center mb-4 ${closed ? 'bg-red-600' : 'bg-[#fce4ec]'}`}>
-           <p className="text-white inline-block px-5 py-2 rounded-full text-[10px] font-black tracking-wide uppercase">
-             {closed ? 'BOOKING CLOSED FOR THIS DRAW' : (isKerala ? 'Booking ends at 02:45 PM' : 'Booking ends 15 mins before draw')}
-           </p>
+        {/* Draw Status Banner */}
+        <div className={`py-4 px-6 flex justify-between items-center shadow-lg border-b border-white/10 ${closed ? 'bg-black' : 'bg-gradient-to-r from-[#ff004d] to-[#ff4d6a]'}`}>
+           <div>
+              <p className="text-white text-[10px] font-black uppercase tracking-[0.2em] opacity-80">{marketName} DRAW</p>
+              <h2 className="text-white text-2xl font-black font-condensed italic">{drawTime}</h2>
+           </div>
+           <div className="text-right">
+              <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-white shadow-inner ${closed ? 'text-black' : 'text-[#ff004d]'}`}>
+                {closed ? 'EXPIRED' : 'OPEN'}
+              </span>
+           </div>
         </div>
 
-        <div className={`p-4 ${closed ? 'opacity-50 pointer-events-none' : ''}`}>
-          <div className="flex gap-4 mb-8">
-             <button onClick={() => navigate('/rules')} className="flex-1 bg-[#ff004d] text-white py-3 rounded-xl flex items-center justify-center gap-2 font-black shadow-lg uppercase tracking-tight">
-                <Gavel size={20} /> Rules
+        <div className="p-4 space-y-4">
+          <div className="flex gap-3">
+             <button onClick={() => navigate('/rules')} className="flex-1 bg-white border-2 border-gray-100 text-gray-900 py-3 rounded-2xl flex items-center justify-center gap-2 font-black shadow-sm uppercase tracking-tight text-xs hover:border-[#ff004d] transition-all">
+                <Gavel size={18} className="text-[#ff004d]" /> Rules
              </button>
-             <button onClick={() => navigate('/results')} className="flex-1 bg-[#ff004d] text-white py-3 rounded-xl flex items-center justify-center gap-2 font-black shadow-lg uppercase tracking-tight">
-                <ScrollText size={20} /> Results
+             <button onClick={() => navigate('/results')} className="flex-1 bg-white border-2 border-gray-100 text-gray-900 py-3 rounded-2xl flex items-center justify-center gap-2 font-black shadow-sm uppercase tracking-tight text-xs hover:border-[#ff004d] transition-all">
+                <ScrollText size={18} className="text-[#ff004d]" /> History
              </button>
           </div>
 
-          <BettingCard 
-            title="Single Digit" 
-            winText="₹ 100" 
-            price="11.00" 
-            gameName={getGameName()} 
-            customRows={[
-              { labels: ['A'], digits: 1 },
-              { labels: ['B'], digits: 1 },
-              { labels: ['C'], digits: 1 }
-            ]}
-          />
-
-          <BettingCard 
-            title="Double Digits" 
-            winText="₹ 1000" 
-            price="11.00" 
-            gameName={getGameName()} 
-            customRows={[
-              { labels: ['A', 'B'], digits: 2 },
-              { labels: ['B', 'C'], digits: 2 },
-              { labels: ['A', 'C'], digits: 2 }
-            ]}
-          />
-          
-          <BettingCard 
-            title="Three Digits" 
-            digits={3} 
-            gameName={getGameName()} 
-            priceOptions={abcTiers}
-          />
-
-          {isKerala && (
+          <div className={`${closed ? 'opacity-40 grayscale pointer-events-none blur-[0.5px]' : ''} space-y-6`}>
+            {/* Single Digit Matrix */}
             <BettingCard 
-              title="4D XABC" 
-              digits={4} 
-              gameName={getGameName()} 
-              priceOptions={xabcTiers}
+                title="Single Digit" 
+                winText="₹ 100" 
+                price="11.00" 
+                gameName={getGameName()} 
+                customRows={[
+                { labels: ['A'], digits: 1 },
+                { labels: ['B'], digits: 1 },
+                { labels: ['C'], digits: 1 }
+                ]}
             />
+
+            {/* Double Digit Combinations */}
+            <BettingCard 
+                title="Double Digits" 
+                winText="₹ 1000" 
+                price="11.00" 
+                gameName={getGameName()} 
+                customRows={[
+                { labels: ['A', 'B'], digits: 2 },
+                { labels: ['B', 'C'], digits: 2 },
+                { labels: ['A', 'C'], digits: 2 }
+                ]}
+            />
+            
+            {/* Triple Digit - ABC */}
+            <BettingCard 
+                title="Three Digits" 
+                digits={3} 
+                gameName={getGameName()} 
+                priceOptions={abcTiers}
+            />
+
+            {/* 4D - XABC (Now available for both markets) */}
+            <BettingCard 
+                title="4D XABC" 
+                digits={4} 
+                gameName={getGameName()} 
+                priceOptions={xabcTiers}
+            />
+          </div>
+          
+          {closed && (
+            <div className="bg-red-50 p-6 rounded-3xl border border-red-100 text-center space-y-2">
+                <Lock className="mx-auto text-red-500 mb-2" size={32} />
+                <p className="text-red-600 font-black uppercase text-xs tracking-widest">Booking Finished</p>
+                <p className="text-gray-400 text-[10px] font-bold">Registration for this draw is officially closed. Please check the next available slot.</p>
+            </div>
           )}
         </div>
       </div>

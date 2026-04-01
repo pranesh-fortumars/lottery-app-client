@@ -72,6 +72,8 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
         num: num,
         qty: row.qty,
         price: parseFloat(currentPrice),
+        type: '3D',
+        pos: 'ABC',
         board: 'ABC'
       });
     });
@@ -97,14 +99,16 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
       if (d === 1) boardLabel = 'A';
       else if (d === 2) boardLabel = 'AB';
       else if (d === 3) boardLabel = 'ABC';
-      else if (d === 4) boardLabel = 'DABC';
+      else if (d === 4) boardLabel = 'XABC';
     }
 
     addToCart({
-      title: `${gameName} - ${title} (Board: ${boardLabel})`,
+      title: `${gameName} - ${title} (${boardLabel})`,
       num: row.numbers.join(''),
       qty: row.qty,
       price: parseFloat(currentPrice),
+      type: title === "Single Digit" ? "1D" : title === "Double Digits" ? "2D (DOUBLE)" : title === "Three Digits" ? "3D" : "4D",
+      pos: boardLabel,
       board: boardLabel
     });
 
@@ -124,8 +128,8 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
     if (row.labels) return row.labels[idx];
     const d = row.numbers.length;
     if (d === 3) return ['A', 'B', 'C'][idx];
-    if (d === 4) return ['D', 'A', 'B', 'C'][idx];
-    return ['A', 'B', 'C', 'D'][idx];
+    if (d === 4) return ['X', 'A', 'B', 'C'][idx];
+    return ['A', 'B', 'C', 'X'][idx];
   };
 
   return (
@@ -172,7 +176,9 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
           <div key={row.id} className="flex items-center justify-between gap-3 min-w-[340px]">
              <div className="flex gap-1 shrink-0">
                 {row.numbers.map((_, i) => (
-                  <div key={i} className="w-7 h-7 bg-[#ff004d] rounded-full flex items-center justify-center text-white font-black text-[9px] shadow-sm uppercase">{getLabel(row, i)}</div>
+                   <div key={i} className={`w-7 h-7 rounded-full flex items-center justify-center text-white font-black text-[9px] shadow-sm uppercase ${getLabel(row, i) === 'X' ? 'bg-black' : 'bg-[#ff004d]'}`}>
+                      {getLabel(row, i)}
+                   </div>
                 ))}
              </div>
              
@@ -184,7 +190,7 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
                     type="text" 
                     value={num}
                     onChange={(e) => updateNumber(rowIdx, digIdx, e.target.value)}
-                    className="w-8 h-8 border-[1.5px] border-gray-950 rounded-lg text-center text-lg font-black bg-white focus:border-[#ff004d] outline-none" 
+                    className={`w-8 h-8 border-[1.5px] rounded-lg text-center text-lg font-black bg-white outline-none ${getLabel(row, digIdx) === 'X' ? 'border-black focus:border-[#ff004d]' : 'border-gray-950 focus:border-[#ff004d]'}`} 
                     placeholder="-" 
                     maxLength="1"
                   />
