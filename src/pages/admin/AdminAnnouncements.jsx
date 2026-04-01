@@ -56,7 +56,20 @@ const AdminAnnouncements = () => {
 
   const draws = Object.keys(drawAssignments);
 
-  // --- Filter Analytics based on Market ---
+  // --- Aggregate Market Analytics ---
+  const marketSummary = useMemo(() => {
+    const summary = {};
+    draws.forEach(d => {
+      const filtered = purchasedTickets.filter(t => t.title.includes(d));
+      summary[d] = {
+        totalQty: filtered.reduce((sum, t) => sum + t.qty, 0),
+        totalValue: filtered.reduce((sum, t) => sum + (t.qty * t.price), 0)
+      };
+    });
+    return summary;
+  }, [purchasedTickets, draws]);
+
+  // --- Detailed Slot Analysis ---
   const currentSlotAnalysis = useMemo(() => {
     const filtered = purchasedTickets.filter(t => t.title.includes(selectedSlot.draw));
     const combinationMap = {};
@@ -325,7 +338,7 @@ const AdminAnnouncements = () => {
                      <p className="text-xl font-black font-condensed italic leading-none">{d}</p>
                      <div className="mt-4 flex justify-between items-end opacity-40">
                         <p className="text-[7px] font-black uppercase">Tickets</p>
-                        <p className="text-xs font-black">{marketSummary[d].totalQty}</p>
+                        <p className="text-xs font-black">{marketSummary[d]?.totalQty || 0}</p>
                      </div>
                   </button>
                 ))}
